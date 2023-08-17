@@ -1,5 +1,5 @@
 use serde_json;
-use std::{fs, path::Path};
+use std::{fs, path::Path, str};
 
 use super::encryption::encrypt;
 use super::encryption::decrypt;
@@ -44,11 +44,20 @@ pub fn create_new_database(path: String, password: String) {
 }
 
 #[tauri::command]
-pub fn decrypt_database(path: String, password: String) { // TODO: finish decryption
+pub fn decrypt_database(path: String, password: String)  -> String { // TODO: finish decryption
     let file_contents = fs::read(path).unwrap();
-    println!("SALT: {}", hex::encode(&file_contents[0..16]));
-    println!("IV: {}", hex::encode(&file_contents[16..32]));
-    println!("DATA: {}", hex::encode(&file_contents[32..]));
+    let salt = &file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
+    let iv = &file_contents[16..32]; // TODO: change IV?
+    let data = &file_contents[32..];
+
+    let key = generate_key_from_password_argon2(password.as_bytes(), salt);
+    let decrypted = decrypt(data, &key, iv).ok().unwrap();
+    let decrypted_string = str::from_utf8(&decrypted).unwrap();
+    println!("Decrypted response: {:?}", decrypted_string);
+    let res: serde_json::Value = serde_json::from_str(&decrypted_string).expect("Unable to parse");
+    let pretty: String = serde_json::to_string_pretty(&res).unwrap();
+    print!("{}", pretty);
+    return pretty;
 }
 
 #[tauri::command]
@@ -60,6 +69,7 @@ pub fn encrypt_database(path: String, password: String /* password will be store
     println!("SALT: {}", hex::encode(&salt));
     println!("IV: {}", hex::encode(&iv));
     println!("DATA: {}", hex::encode(&data));
+    println!("PASSWORD: {}", password);
 }
 
 #[tauri::command]

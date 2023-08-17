@@ -21,7 +21,8 @@
         "readText": true
       },
       "dialog": {
-        "save": true
+        "save": true,
+        "open": true
       }
     },
     "bundle": {

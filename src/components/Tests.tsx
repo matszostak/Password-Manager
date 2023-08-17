@@ -1,12 +1,14 @@
 import { Button, Text, Title } from '@mantine/core'
-import { exists, readTextFile, writeFile, BaseDirectory, createDir } from '@tauri-apps/api/fs'
+import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs'
 import { useState } from 'react'
 import { writeText, readText } from '@tauri-apps/api/clipboard';
 import * as Constants from '../utils/constants'
 import { saveTest } from '../utils/fileOperations';
+import { invoke } from '@tauri-apps/api';
+import { open } from '@tauri-apps/api/dialog';
 
 export default function Tests() {
-    const fileContent: string = ''
+  const fileContent: any = ''
   const [value, setValue] = useState(fileContent);
 
   const handleWriteClick = async () => {
@@ -34,22 +36,35 @@ export default function Tests() {
   }
 
 
-  interface testData {
-    id: number;
-    name: string;
-    pass: string;
+  async function decryptDB() {
+    const selected = await open({
+      multiple: false,
+      filters: [{
+        name: '.secpass', //TODO: some extension or something
+        extensions: ['secpass'],
+      }]
+    });
+    await invoke('decrypt_database', { path: selected, password: "aaaa" }).then(msg => {
+      console.log(JSON.parse(String(msg)))
+      console.log(typeof (JSON.parse(String(msg))))
+      setValue(JSON.parse(String(msg)))
+    })
   }
-    return (
-        <>
-            <Title>Tests</Title>
-            <Button onClick={handleWriteClick}>Write</Button>
-            <Button onClick={handleReadClick}>Read</Button>
-            <Button onClick={() => setValue('')} color='red'>Remove</Button>
-            <Text>{value}</Text>
-            <Button onClick={handleCopyToClipboard}>Copy to clipboard!</Button>
-            <Button onClick={handleReadFromClipboard}>Read from clipboard!</Button>
-            <Button onClick={saveTest}>Save a file</Button>
-            <Text>{clipText}</Text>
-        </>
-    );
+
+  return (
+    <>
+      <Title>Tests</Title>
+      <Button onClick={handleWriteClick}>Write</Button>
+      <Button onClick={handleReadClick}>Read</Button>
+      <Button onClick={() => setValue('')} color='red'>Remove</Button>
+      <Button onClick={handleCopyToClipboard}>Copy to clipboard!</Button>
+      <Button onClick={handleReadFromClipboard}>Read from clipboard!</Button>
+      <Button onClick={saveTest}>Save a file</Button>
+      <Text>{clipText}</Text>
+      <Button onClick={() => decryptDB()}>Decrypt DB</Button>
+      <Button onClick={() => console.log(value.vault[0])}>Console</Button>
+      <Text>{value.encryption}</Text>
+      <Text>{typeof(value)}</Text>
+    </>
+  );
 }

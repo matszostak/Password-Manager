@@ -1,4 +1,4 @@
-import { createStyles, Navbar, getStylesRef, rem, Anchor } from '@mantine/core';
+import { createStyles, getStylesRef, rem } from '@mantine/core';
 
 export const getAppStyles = createStyles((theme: { spacing: { xs: any; }; radius: { md: any; }; colorScheme: string; colors: { dark: any[]; gray: any[]; }; black: any; }) => ({
   navLink: {
