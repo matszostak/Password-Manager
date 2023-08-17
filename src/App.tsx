@@ -27,6 +27,7 @@ import Databases from './components/Databases';
 import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
+import { Notifications } from '@mantine/notifications';
 
 export default function App() {
 
@@ -91,6 +92,7 @@ export default function App() {
   return (
     <>
       <MantineProvider theme={{ colorScheme: colorScheme, fontFamily: 'Open Sans, sans serif' }} withGlobalStyles >
+      <Notifications limit={5}/>
         <BrowserRouter>
           <AppShell padding='md' navbarOffsetBreakpoint='sm'
             navbar={

@@ -23,12 +23,8 @@ pub fn create_new_database(path: String, password: String) {
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
         let iv: [u8; 16] = [0; 16];
         let mut salt_and_iv = [&salt[..], &iv].concat();
-        
-
         println!("Salt: {}", hex::encode(salt));
         println!("IV: {}", hex::encode(iv));
-
-
         // TODO: save salt, IV and all the important stuff to file
         let mut encrypted = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
         println!("{}", hex::encode(&encrypted));

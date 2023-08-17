@@ -1,15 +1,15 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Dialog, TextInput } from "@mantine/core";
 import { useDisclosure, useId, useInputState } from "@mantine/hooks";
-import { IconLock } from "@tabler/icons-react";
+import { IconCheck, IconLock, IconX } from "@tabler/icons-react";
 import { saveNewDatabase } from "../utils/fileOperations";
 import { useState } from "react";
+import { useForm } from "@mantine/form";
+import { notifications } from '@mantine/notifications';
 
 export default function Home() {
-  const [opened, { open, close }] = useDisclosure(false);
-  const [ passwordMatch, setPasswordMatch ] = useState(true)
+  const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [dbName, setDbName] = useInputState('')
   const [password, setPassword] = useInputState('')
-  const [rePassword, setRePassword] = useInputState('')
   const [p, setP] = useState<string | null>()
 
   const openExistingDatabase = async () => {
@@ -19,82 +19,44 @@ export default function Home() {
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     setP(pathOfNewDB)
-    console.log(p)
+    console.log("Password: " + password)
+    console.log("Path: " + p)
   }
 
-  const handlePasswordChange = (rePass: string) => {
-    setRePassword(rePass)
-    validatePassword(rePass)
-  }
-
-  const validatePassword = (rePassword: string) => {
-    if (password === rePassword) {
-      setPasswordMatch(true)
-    } else {
-      setPasswordMatch(false)
-    }
-  }
-  // TODO: validation uses previous state of RePassword (for example: aaa = aaa+(one letter))
-
+  const form = useForm({
+    validate: {
+      confirmPassword: (value, values) =>
+        value !== values.password ? 'Passwords did not match' : setPassword(String(value)),
+    },
+  });
 
   return (
     <>
       <Title>Home</Title>
-
       <Modal opened={opened} onClose={close} title="Create new password database" size="md">
-        {/*<TextInput
-          placeholder="Database name"
-          label="Database name"
-          withAsterisk
-          required
-          onChange={(e) => {
-            setDbName(e.target.value)
-            console.log(e.target.value)
-          }}
-        /> TODO: get the name... or not */} 
+        <Box maw={340} mx="auto">
+          <form onSubmit={form.onSubmit(() => {
+            createDatabase()
+            close()
+          })}>
+            <PasswordInput
+              label="Password"
+              placeholder="Password"
+              {...form.getInputProps('password')}
+            />
 
-        <Space h='sm' />
-        <PasswordInput
-          icon={<IconLock size={20} />}
-          placeholder="Password"
-          label="Master Password"
-          withAsterisk
-          required
-          onChange={(e) => {
-            setPassword(e.target.value)
-            console.log(e.target.value)
-          }}
-        />
+            <PasswordInput
+              mt="sm"
+              label="Confirm password"
+              placeholder="Confirm password"
+              {...form.getInputProps('confirmPassword')}
+            />
 
-        <Space h='sm' />
-        <PasswordInput
-          icon={<IconLock size={20} />}
-          placeholder="Password"
-          label="Repeat Master Password"
-          withAsterisk
-          required
-          error={passwordMatch ? '' : 'Password does not match.'}
-          onChange={(e) => {
-            handlePasswordChange(e.target.value)
-            
-            console.log(e.target.value)
-            
-            // check if password is strong enough and matches first password
-          }}
-        />
-        <Space h='sm' />
-        <Group position="center">
-          <Button color='green' onClick={() => {
-            createDatabase();
-            close();
-          }}>Submit</Button>
-          <Button color='red' onClick={() => {
-            close();
-            setDbName('');
-            setPassword('');
-            setRePassword('');
-          }}>Cancel</Button>
-        </Group>
+            <Group position="right" mt="md">
+              <Button type="submit">Submit</Button>
+            </Group>
+          </form>
+        </Box>
       </Modal>
 
       <Center>
@@ -106,7 +68,20 @@ export default function Home() {
       <Title size='md'>Available databases:</Title>
       {/* TODO: save paths of the created databases in order to display them here, in file OR in localStorage */}
       <Text>{p}</Text> {/* TODO: List databases with 'open' buttons */}
-
+      <Button
+        variant="outline"
+        onClick={() =>
+          notifications.show({
+            message: '',
+            title: 'Database created',
+            color: "green",
+            icon: <IconCheck size="0.9rem" />,
+            autoClose: 3600,
+          })
+        }
+      >
+        Show
+      </Button>
     </>
   );
 }
