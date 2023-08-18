@@ -6,6 +6,8 @@ import * as Constants from '../utils/constants'
 import { saveTest } from '../utils/fileOperations';
 import { invoke } from '@tauri-apps/api';
 import { open } from '@tauri-apps/api/dialog';
+import { notifications } from '@mantine/notifications';
+import { IconCheck } from '@tabler/icons-react';
 
 export default function Tests() {
   const fileContent: any = ''
@@ -65,6 +67,20 @@ export default function Tests() {
       <Button onClick={() => console.log(value.vault[0])}>Console</Button>
       <Text>{value.encryption}</Text>
       <Text>{typeof(value)}</Text>
+      <Button
+        variant="outline"
+        onClick={() =>
+          notifications.show({
+            message: '',
+            title: 'Database created',
+            color: "green",
+            icon: <IconCheck size="0.9rem" />,
+            autoClose: 3600,
+          })
+        }
+      >
+        Show
+      </Button>
     </>
   );
 }

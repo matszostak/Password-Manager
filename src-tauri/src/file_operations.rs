@@ -12,8 +12,7 @@ pub fn create_new_database(path: String, password: String) {
     let key = generate_key_from_password_argon2(password.as_bytes(), salt);
 
     println!("Key: {}", hex::encode(key));
-    println!("{}", password);
-    println!("{}", path);
+    println!("PASSWORD: {}", password);
 
     // TODO: encrypt file with password and basically handle key creation
     let template_path = Path::new("src\\db_template.json");
@@ -47,6 +46,15 @@ pub fn decrypt_database(path: String, password: String)  -> String { // TODO: fi
     let data = &file_contents[32..];
 
     let key = generate_key_from_password_argon2(password.as_bytes(), salt);
+
+    println!("\n\n\n");
+    println!("SALT: {}", hex::encode(&salt));
+    println!("IV: {}", hex::encode(&iv));
+    println!("DATA: {}", hex::encode(&data));
+    println!("PASSWORD: {}", password);
+    println!("KEY: {}", hex::encode(&key));
+    println!("\n\n\n");
+
     let decrypted = decrypt(data, &key, iv).ok().unwrap();
     let decrypted_string = str::from_utf8(&decrypted).unwrap();
     println!("Decrypted response: {:?}", decrypted_string);

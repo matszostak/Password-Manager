@@ -9,9 +9,9 @@ export default function Databases() {
     const [testValue, setTestValue] = useState(fileContent);
     
     async function testInvoke() {
-        let doesExist = await exists('test.json', { dir: BaseDirectory.Desktop });
+        let doesExist = await exists('aaaa.secpass', { dir: BaseDirectory.Desktop });
         if (doesExist) {
-            await invoke('test_command', { fromWhere: "Databases.tsx" }).then(msg => {
+            await invoke('test_command', { fromWhere: "Databases.tsx", fileName: 'aaaa.secpass' }).then(msg => {
                 setValue(JSON.parse(String(msg)))
                 setTestValue(JSON.parse(String(msg)).vault[0])
             })
@@ -27,7 +27,6 @@ export default function Databases() {
             <Title>Your databases</Title>
             <Button onClick={() => {
                 testInvoke()
-
             }}>
                 Click me!
             </Button>

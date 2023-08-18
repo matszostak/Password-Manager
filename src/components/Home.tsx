@@ -1,14 +1,12 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Dialog, TextInput } from "@mantine/core";
-import { useDisclosure, useId, useInputState } from "@mantine/hooks";
-import { IconCheck, IconLock, IconX } from "@tabler/icons-react";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box } from "@mantine/core";
+import { useDisclosure, useInputState } from "@mantine/hooks";
 import { saveNewDatabase } from "../utils/fileOperations";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
-import { notifications } from '@mantine/notifications';
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  const [dbName, setDbName] = useInputState('')
+  // const [dbName, setDbName] = useInputState('') // TODO: delete if not useful
   const [password, setPassword] = useInputState('')
   const [p, setP] = useState<string | null>()
 
@@ -26,7 +24,7 @@ export default function Home() {
   const form = useForm({
     validate: {
       confirmPassword: (value, values) =>
-        value !== values.password ? 'Passwords did not match' : setPassword(String(value)),
+        value !== values.password ? 'Passwords did not match' : setPassword(String(values.password)),
     },
   });
 
@@ -68,20 +66,6 @@ export default function Home() {
       <Title size='md'>Available databases:</Title>
       {/* TODO: save paths of the created databases in order to display them here, in file OR in localStorage */}
       <Text>{p}</Text> {/* TODO: List databases with 'open' buttons */}
-      <Button
-        variant="outline"
-        onClick={() =>
-          notifications.show({
-            message: '',
-            title: 'Database created',
-            color: "green",
-            icon: <IconCheck size="0.9rem" />,
-            autoClose: 3600,
-          })
-        }
-      >
-        Show
-      </Button>
     </>
   );
 }
