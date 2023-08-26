@@ -40,3 +40,9 @@ export async function saveNewDatabase(password: string) {
     // https://www.youtube.com/watch?v=WDPZb_zVrd8
     return filePath
 }
+
+export async function openExistingDatabase(password: string) {
+    console.log('hello grom fileOps! password:', password)
+
+    return password
+}

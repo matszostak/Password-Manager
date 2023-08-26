@@ -28,6 +28,8 @@ import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
 import { Notifications } from '@mantine/notifications';
+import { ModalProvider } from '@mantine/core/lib/Modal/Modal.context';
+import { ModalsProvider } from '@mantine/modals';
 
 export default function App() {
 
@@ -92,33 +94,35 @@ export default function App() {
   return (
     <>
       <MantineProvider theme={{ colorScheme: colorScheme, fontFamily: 'Open Sans, sans serif' }} withGlobalStyles >
-      <Notifications limit={5}/>
-        <BrowserRouter>
-          <AppShell padding='md' navbarOffsetBreakpoint='sm'
-            navbar={
-              <NavbarSimple isOpened={mobileNavOpened} />
-            }
-            header={
-              <Header height={70} p='md' className={`${classes.header} ` + (classes.headerOverrides)}>
-                <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-                  <Burger opened={mobileNavOpened} onClick={() => setMobileNavOpened(o => !o)}
-                    size='sm' mr='xl' color={useMantineTheme().colors.gray[6]} />
-                </MediaQuery>
-                <Title>TITLE</Title>
-                <Group className={classes.headerRightItems}>
-                  <ActionIcon variant="default" onClick={() => toggleColorScheme()}>{colorScheme === 'dark' ? <h3>D</h3> : <h3>L</h3>}</ActionIcon>
-                </Group>
-              </Header>}
-          >
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/security' element={<Security />} />
-              <Route path='/databases' element={<Databases />} />
-              <Route path='/settings' element={<Settings />} />
-              <Route path='/tests' element={<Tests />} />
-            </Routes>
-          </AppShell>
-        </BrowserRouter>
+        <Notifications limit={5} />
+        <ModalsProvider>
+          <BrowserRouter>
+            <AppShell padding='md' navbarOffsetBreakpoint='sm'
+              navbar={
+                <NavbarSimple isOpened={mobileNavOpened} />
+              }
+              header={
+                <Header height={70} p='md' className={`${classes.header} ` + (classes.headerOverrides)}>
+                  <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
+                    <Burger opened={mobileNavOpened} onClick={() => setMobileNavOpened(o => !o)}
+                      size='sm' mr='xl' color={useMantineTheme().colors.gray[6]} />
+                  </MediaQuery>
+                  <Title>TITLE</Title>
+                  <Group className={classes.headerRightItems}>
+                    <ActionIcon variant="default" onClick={() => toggleColorScheme()}>{colorScheme === 'dark' ? <h3>D</h3> : <h3>L</h3>}</ActionIcon>
+                  </Group>
+                </Header>}
+            >
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/security' element={<Security />} />
+                <Route path='/databases' element={<Databases />} />
+                <Route path='/settings' element={<Settings />} />
+                <Route path='/tests' element={<Tests />} />
+              </Routes>
+            </AppShell>
+          </BrowserRouter>
+        </ModalsProvider>
       </MantineProvider>
     </>
   );
