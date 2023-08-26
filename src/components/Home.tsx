@@ -36,6 +36,7 @@ export default function Home() {
           <form onSubmit={form.onSubmit(() => {
             createDatabase()
             close()
+
           })}>
             <PasswordInput
               label="Password"
@@ -51,7 +52,11 @@ export default function Home() {
             />
 
             <Group position="right" mt="md">
-              <Button type="submit">Submit</Button>
+              <Button type="submit" onClick={() => {
+                setPassword(String(form.values.confirmPassword))
+                console.log('test' + password)
+              }
+              }>Submit</Button>
             </Group>
           </form>
         </Box>
