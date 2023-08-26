@@ -6,9 +6,8 @@ import { useForm } from "@mantine/form";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  // const [dbName, setDbName] = useInputState('') // TODO: delete if not useful
   const [password, setPassword] = useInputState('')
-  const [p, setP] = useState<string | null>()
+  const [p, setP] = useState<string | null>() // TODO: make it into a list, currently it only shows the latest db
 
   const openExistingDatabase = async () => {
     console.log('open existing')
@@ -18,7 +17,7 @@ export default function Home() {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     setP(pathOfNewDB)
     console.log("Password: " + password)
-    console.log("Path: " + p)
+    console.log("Path: " + pathOfNewDB)
   }
 
   const form = useForm({
