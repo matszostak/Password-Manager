@@ -17,7 +17,13 @@ export default function Home() {
     console.log("Path: " + pathOfNewDB)
   }
 
-  const form = useForm({});
+  const form = useForm({
+    validate: {
+      confirmPassword: (value, values) =>
+        value !== values.password ? 'Passwords did not match' : setPassword(String(values.password)),
+    },
+  });
+
 
   const openModal = () => {
     let openpass: string = ''
