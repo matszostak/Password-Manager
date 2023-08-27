@@ -55,13 +55,20 @@ pub fn decrypt_database(path: String, password: String)  -> String { // TODO: fi
     println!("KEY: {}", hex::encode(&key));
     println!("\n\n\n");
 
-    let decrypted = decrypt(data, &key, iv).ok().unwrap();
-    let decrypted_string = str::from_utf8(&decrypted).unwrap();
-    println!("Decrypted response: {:?}", decrypted_string);
-    let res: serde_json::Value = serde_json::from_str(&decrypted_string).expect("Unable to parse");
-    let pretty: String = serde_json::to_string_pretty(&res).unwrap();
-    print!("{}", pretty);
-    return pretty;
+    let decrypted_result = decrypt(data, &key, iv);
+    let mut decrypted = Vec::<u8>::new();
+    if decrypted_result.is_ok() {
+        decrypted = decrypted_result.ok().unwrap();
+        let decrypted_string = str::from_utf8(&decrypted).unwrap();
+        println!("Decrypted response: {:?}", decrypted_string);
+        let res: serde_json::Value = serde_json::from_str(&decrypted_string).expect("Unable to parse");
+        let pretty: String = serde_json::to_string_pretty(&res).unwrap();
+        print!("{}", pretty);
+        return pretty;
+    } else {
+        let err_string = "{}";
+        return serde_json::to_string_pretty(&err_string).unwrap();
+    }
 }
 
 #[tauri::command]

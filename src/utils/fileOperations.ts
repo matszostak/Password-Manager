@@ -1,4 +1,4 @@
-import { save } from '@tauri-apps/api/dialog';
+import { save, open as open_tauri } from '@tauri-apps/api/dialog';
 import { invoke } from "@tauri-apps/api/tauri";
 
 export const saveTest = async () => {
@@ -42,7 +42,21 @@ export async function saveNewDatabase(password: string) {
 }
 
 export async function openExistingDatabase(password: string) {
-    console.log('hello grom fileOps! password:', password)
-
-    return password
+    const selected = await open_tauri({
+        multiple: false,
+        filters: [{
+          name: '.secpass',
+          extensions: ['secpass']
+        }]
+      });
+    console.log('hello grom fileOps! password:', password, selected)
+    const database_content = await invoke('decrypt_database', { path: selected, password: password })
+    if (database_content === "\"{}\"") {
+        console.log('wrong password!')
+        return "Wrong password!"
+    } else {
+        console.log('good password!')
+        console.log(database_content)
+        return database_content
+    }
 }

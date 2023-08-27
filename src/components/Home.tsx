@@ -25,8 +25,9 @@ export default function Home() {
   });
 
 
-  const openModal = () => {
+  const openModal = async () => {
     let openpass: string = ''
+    let path: string = ''
     modals.open({
       title: 'Subscribe to newsletter',
       children: (
