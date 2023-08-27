@@ -56,9 +56,8 @@ pub fn decrypt_database(path: String, password: String)  -> String { // TODO: fi
     println!("\n\n\n");
 
     let decrypted_result = decrypt(data, &key, iv);
-    let mut decrypted = Vec::<u8>::new();
     if decrypted_result.is_ok() {
-        decrypted = decrypted_result.ok().unwrap();
+        let decrypted = decrypted_result.ok().unwrap();
         let decrypted_string = str::from_utf8(&decrypted).unwrap();
         println!("Decrypted response: {:?}", decrypted_string);
         let res: serde_json::Value = serde_json::from_str(&decrypted_string).expect("Unable to parse");

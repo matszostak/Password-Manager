@@ -7,7 +7,7 @@ import { modals } from "@mantine/modals";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  const [password, setPassword] = useInputState('')
+  const [password, setPassword] = useInputState('') // TODO: change it to a let or const instead of state/hook
   const [p, setP] = useState<string | null>() // TODO: make it into a list, currently it only shows the latest db
 
   const createDatabase = async () => {
@@ -27,7 +27,6 @@ export default function Home() {
 
   const openModal = async () => {
     let openpass: string = ''
-    let path: string = ''
     modals.open({
       title: 'Subscribe to newsletter',
       children: (
@@ -45,7 +44,7 @@ export default function Home() {
             <Group position="right" mt="md">
               <Button onClick={() => {
                 modals.closeAll()
-                openExistingDatabase(openpass) // TODO: handle opening database here, f u c k h o o k s
+                openExistingDatabase(openpass)
               }}>
                 Submit
               </Button>

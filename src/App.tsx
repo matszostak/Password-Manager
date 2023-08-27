@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react';
 import { exists, writeFile, createDir } from '@tauri-apps/api/fs'
 
-
 /* Mantine Imports */
 import {
   MantineProvider,
@@ -28,13 +27,9 @@ import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
 import { Notifications } from '@mantine/notifications';
-import { ModalProvider } from '@mantine/core/lib/Modal/Modal.context';
 import { ModalsProvider } from '@mantine/modals';
 
 export default function App() {
-
-
-
   let defaultColorScheme: any = ''
   if (localStorage.getItem('savedColorScheme')) {
     defaultColorScheme = localStorage.getItem('savedColorScheme')
