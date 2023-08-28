@@ -102,7 +102,7 @@ export default function App() {
                     <Burger opened={mobileNavOpened} onClick={() => setMobileNavOpened(o => !o)}
                       size='sm' mr='xl' color={useMantineTheme().colors.gray[6]} />
                   </MediaQuery>
-                  <Title>TITLE</Title>
+                  <Title>Password Manager</Title>
                   <Group className={classes.headerRightItems}>
                     <ActionIcon variant="default" onClick={() => toggleColorScheme()}>{colorScheme === 'dark' ? <h3>D</h3> : <h3>L</h3>}</ActionIcon>
                   </Group>

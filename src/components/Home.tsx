@@ -1,4 +1,4 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, SimpleGrid, Card } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
 import { useState } from "react";
@@ -7,14 +7,15 @@ import { modals } from "@mantine/modals";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  const [password, setPassword] = useInputState('') // TODO: change it to a let or const instead of state/hook
-  const [p, setP] = useState<string | null>() // TODO: make it into a list, currently it only shows the latest db
+  const [password, setPassword] = useInputState('') // Keep it a hook for now
+  const [p, setP] = useState<string[]>([]) // TODO: make it into a list, currently it only shows the latest db
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
-    setP(pathOfNewDB)
+    p.push(String(pathOfNewDB))
     console.log("Password: " + password)
     console.log("Path: " + pathOfNewDB)
+    form.reset();
   }
 
   const form = useForm({
@@ -24,8 +25,7 @@ export default function Home() {
     },
   });
 
-
-  const openModal = async () => {
+  const openDatabase = async () => { // TODO: choose path first, then ask for password
     let openpass: string = ''
     modals.open({
       title: 'Subscribe to newsletter',
@@ -40,7 +40,6 @@ export default function Home() {
                 console.log(openpass)
               }}
             />
-
             <Group position="right" mt="md">
               <Button onClick={() => {
                 modals.closeAll()
@@ -55,6 +54,28 @@ export default function Home() {
     })
     console.log(openpass)
     return openpass
+  }
+
+  const mapDatabaseFiles = () => {
+    return (
+      p.map(
+        (databasePath) =>
+          <>
+            <Flex
+              mih={40}
+              gap="xl"
+              justify="flex-start"
+              align="center"
+              direction="row"
+              wrap="nowrap"
+            >
+              <Text key={databasePath}>{databasePath}</Text> { /* TODO: List databases with 'open' buttons */}
+              <Space w={120} />
+              <Button variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
+            </Flex>
+          </>
+      )
+    )
   }
 
   return (
@@ -94,12 +115,13 @@ export default function Home() {
       <Center>
         <Button onClick={open} color="green" size="md">Create Database</Button>
         <Space w="md" />
-        <Button onClick={() => openModal()} size="md">Open Database</Button>
+        <Button onClick={() => openDatabase()} size="md">Open Database</Button>
       </Center>
-      <Space h='md' />
-      <Title size='md'>Available databases:</Title>
-      {/* TODO: save paths of the created databases in order to display them here, in file OR in localStorage */}
-      <Text>{p}</Text> {/* TODO: List databases with 'open' buttons */}
+      <Space h='xl' />
+      <Title size={20}>Available databases:</Title>
+      {/* TODO: save paths of the created databases in order to display them here, in file OR in localStorage <== local storage is better */}
+      {/* TODO: also save paths when successful open */}
+      {mapDatabaseFiles()}
     </>
   );
 }
