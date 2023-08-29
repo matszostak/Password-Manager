@@ -3,7 +3,6 @@ import { readTextFile, BaseDirectory } from '@tauri-apps/api/fs'
 import { useState } from 'react'
 import { writeText, readText } from '@tauri-apps/api/clipboard';
 import * as Constants from '../utils/constants'
-import { saveTest } from '../utils/fileOperations';
 import { invoke } from '@tauri-apps/api';
 import { open } from '@tauri-apps/api/dialog';
 import { notifications } from '@mantine/notifications';
@@ -61,7 +60,6 @@ export default function Tests() {
       <Button onClick={() => setValue('')} color='red'>Remove</Button>
       <Button onClick={handleCopyToClipboard}>Copy to clipboard!</Button>
       <Button onClick={handleReadFromClipboard}>Read from clipboard!</Button>
-      <Button onClick={saveTest}>Save a file</Button>
       <Text>{clipText}</Text>
       <Button onClick={() => decryptDB()}>Decrypt DB</Button>
       <Button onClick={() => console.log(value.vault[0])}>Console</Button>

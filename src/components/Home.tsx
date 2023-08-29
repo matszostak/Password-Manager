@@ -1,9 +1,12 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, SimpleGrid, Card } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
+import { open as open_tauri } from '@tauri-apps/api/dialog';
+import { notifications } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
@@ -11,7 +14,7 @@ export default function Home() {
   const [p, setP] = useState<string[]>([]) // TODO: make it into a list, currently it only shows the latest db
 
   const createDatabase = async () => {
-    let pathOfNewDB: string | null = await saveNewDatabase(password)
+    let pathOfNewDB: string | null = await saveNewDatabase(password) /* TODO: check if pathOfNewDB is null (or just make it work) */
     p.push(String(pathOfNewDB))
     console.log("Password: " + password)
     console.log("Path: " + pathOfNewDB)
@@ -27,32 +30,50 @@ export default function Home() {
 
   const openDatabase = async () => { // TODO: choose path first, then ask for password
     let openpass: string = ''
-    modals.open({
-      title: 'Subscribe to newsletter',
-      children: (
-        <>
-          <Box maw={340} mx="auto">
-            <PasswordInput
-              label="Password"
-              placeholder="Password"
-              onChange={(e) => {
-                openpass = e.target.value
-                console.log(openpass)
-              }}
-            />
-            <Group position="right" mt="md">
-              <Button onClick={() => {
-                modals.closeAll()
-                openExistingDatabase(openpass)
-              }}>
-                Submit
-              </Button>
-            </Group>
-          </Box>
-        </>
-      ),
-    })
-    console.log(openpass)
+    const selected = await open_tauri({
+      multiple: false,
+      filters: [{
+        name: '.secpass',
+        extensions: ['secpass']
+      }]
+    });
+    console.log('selected:', selected)
+    if (selected) {
+      modals.open({
+        title: 'Subscribe to newsletter',
+        children: (
+          <>
+            <Box maw={340} mx="auto">
+              <PasswordInput
+                label="Password"
+                placeholder="Password"
+                onChange={(e) => {
+                  openpass = e.target.value
+                  console.log(openpass)
+                }}
+              />
+              <Group position="right" mt="md">
+                <Button onClick={() => {
+                  modals.closeAll()
+                  openExistingDatabase(openpass, String(selected))
+                }}>
+                  Submit
+                </Button>
+              </Group>
+            </Box>
+          </>
+        ),
+      })
+    } else {
+      console.log('no file selected')
+      notifications.show({
+        message: 'Please select a valid database file.',
+        title: 'You have to choose a database file!',
+        color: "red",
+        icon: <IconX  size="0.9rem" />,
+        autoClose: 3600,
+      })
+    }
     return openpass
   }
 
