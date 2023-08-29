@@ -12,7 +12,7 @@ export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
-  const [p] = useState<string[]>([]) 
+  const [p] = useState<string[]>([])
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)

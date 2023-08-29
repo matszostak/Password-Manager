@@ -81,24 +81,3 @@ pub fn encrypt_database(path: String, password: String /* password will be store
     println!("DATA: {}", hex::encode(&data));
     println!("PASSWORD: {}", password);
 }
-
-#[tauri::command]
-pub fn test_command(from_where: String) -> String {
-    println!("Command invoked from {}!", from_where);
-
-    let path: &str = "C:\\Users\\Mateusz\\Desktop\\test.json";
-    if Path::new("C:\\Users\\Mateusz\\Desktop\\test.json").exists() {
-        let data: String = fs::read_to_string(path).expect("Unable to read file");
-
-        let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
-        let pretty: String = serde_json::to_string_pretty(&res).unwrap();
-        print!("{}", pretty);
-        return pretty;
-    } else {
-        let res: serde_json::Value =
-            serde_json::from_str("{\"name\": \"abc\"}").expect("Unable to parse");
-        let failed_to_open: String = serde_json::to_string_pretty(&res).unwrap();
-        print!("{}", failed_to_open);
-        return failed_to_open;
-    }
-}
