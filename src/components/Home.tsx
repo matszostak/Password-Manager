@@ -11,14 +11,28 @@ import { IconX } from "@tabler/icons-react";
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
-  const [p, setP] = useState<string[]>([]) // TODO: make it into a list, currently it only shows the latest db
+  // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
+  const [p] = useState<string[]>([]) 
 
   const createDatabase = async () => {
-    let pathOfNewDB: string | null = await saveNewDatabase(password) /* TODO: check if pathOfNewDB is null (or just make it work) */
-    p.push(String(pathOfNewDB))
-    console.log("Password: " + password)
-    console.log("Path: " + pathOfNewDB)
-    form.reset();
+    let pathOfNewDB: string | null = await saveNewDatabase(password)
+    if (pathOfNewDB) {
+      p.push(String(pathOfNewDB))
+      console.log("Password: " + password)
+      console.log("Path: " + pathOfNewDB)
+      form.reset();
+    } else {
+      notifications.show({
+        message: 'Please create a database file.',
+        title: 'Database file not created!',
+        color: "red",
+        icon: <IconX size="0.9rem" />,
+        autoClose: 3600,
+      })
+      console.log("Path is empty", pathOfNewDB)
+      form.reset();
+    }
+
   }
 
   const form = useForm({
@@ -28,7 +42,7 @@ export default function Home() {
     },
   });
 
-  const openDatabase = async () => { // TODO: choose path first, then ask for password
+  const openDatabase = async () => {
     let openpass: string = ''
     const selected = await open_tauri({
       multiple: false,
@@ -40,28 +54,26 @@ export default function Home() {
     console.log('selected:', selected)
     if (selected) {
       modals.open({
-        title: 'Subscribe to newsletter',
+        title: 'Open database',
         children: (
-          <>
-            <Box maw={340} mx="auto">
-              <PasswordInput
-                label="Password"
-                placeholder="Password"
-                onChange={(e) => {
-                  openpass = e.target.value
-                  console.log(openpass)
-                }}
-              />
-              <Group position="right" mt="md">
-                <Button onClick={() => {
-                  modals.closeAll()
-                  openExistingDatabase(openpass, String(selected))
-                }}>
-                  Submit
-                </Button>
-              </Group>
-            </Box>
-          </>
+          <Box maw={340} mx="auto">
+            <PasswordInput
+              label="Password"
+              placeholder="Password"
+              onChange={(e) => {
+                openpass = e.target.value
+                console.log(openpass)
+              }}
+            />
+            <Group position="right" mt="md">
+              <Button onClick={() => {
+                modals.closeAll()
+                openExistingDatabase(openpass, String(selected))
+              }}>
+                Open
+              </Button>
+            </Group>
+          </Box>
         ),
       })
     } else {
@@ -70,7 +82,7 @@ export default function Home() {
         message: 'Please select a valid database file.',
         title: 'You have to choose a database file!',
         color: "red",
-        icon: <IconX  size="0.9rem" />,
+        icon: <IconX size="0.9rem" />,
         autoClose: 3600,
       })
     }
@@ -81,20 +93,19 @@ export default function Home() {
     return (
       p.map(
         (databasePath) =>
-          <>
-            <Flex
-              mih={40}
-              gap="xl"
-              justify="flex-start"
-              align="center"
-              direction="row"
-              wrap="nowrap"
-            >
-              <Text key={databasePath}>{databasePath}</Text> { /* TODO: List databases with 'open' buttons */}
-              <Space w={120} />
-              <Button variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
-            </Flex>
-          </>
+          <Flex
+            mih={40}
+            gap="xl"
+            justify="flex-start"
+            align="center"
+            direction="row"
+            wrap="nowrap"
+          >
+            <Group w={360}>
+              <Text key={databasePath}>{databasePath}</Text>
+            </Group>
+            <Button variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
+          </Flex>
       )
     )
   }
@@ -140,7 +151,6 @@ export default function Home() {
       </Center>
       <Space h='xl' />
       <Title size={20}>Available databases:</Title>
-      {/* TODO: save paths of the created databases in order to display them here, in file OR in localStorage <== local storage is better */}
       {/* TODO: also save paths when successful open */}
       {mapDatabaseFiles()}
     </>

@@ -1,5 +1,5 @@
-import { save, open as open_tauri } from '@tauri-apps/api/dialog';
-import { invoke } from "@tauri-apps/api/tauri";
+import { save, open as open_tauri } from '@tauri-apps/api/dialog'
+import { invoke } from "@tauri-apps/api/tauri"
 
 export async function saveNewDatabase(password: string) {
     console.log(password)
@@ -11,11 +11,10 @@ export async function saveNewDatabase(password: string) {
     });
     console.log(filePath)
     if (filePath) {
-        await invoke("create_new_database", { path: filePath, password: password }); // TODO: passwords
+        await invoke("create_new_database", { path: filePath, password: password })
         return filePath
     }
     else {
-        // TODO: Do something with it (display to user that file was not specified)
         console.log('File path not specified.')
         return null
     }
