@@ -1,8 +1,8 @@
 use serde_json;
 use std::{fs, path::Path, str};
 
-use super::encryption::encrypt;
-use super::encryption::decrypt;
+use super::aes_encryption::encrypt;
+use super::aes_encryption::decrypt;
 use super::key_derivation::generate_key_from_password_argon2;
 
 

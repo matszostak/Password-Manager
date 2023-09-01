@@ -12,15 +12,17 @@ export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
-  const [p] = useState<string[]>([])
+  const [paths] = useState<string[]>([])
+  const [isDatabaseOpened, setIsDatabaseOpened] = useState(false)
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     if (pathOfNewDB) {
-      p.push(String(pathOfNewDB))
+      paths.push(String(pathOfNewDB))
       console.log("Password: " + password)
       console.log("Path: " + pathOfNewDB)
-      form.reset();
+      form.reset()
+      setIsDatabaseOpened(true)
     } else {
       notifications.show({
         message: 'Please create a database file.',
@@ -69,6 +71,7 @@ export default function Home() {
               <Button onClick={() => {
                 modals.closeAll()
                 openExistingDatabase(openpass, String(selected))
+                setIsDatabaseOpened(true)
               }}>
                 Open
               </Button>
@@ -90,8 +93,9 @@ export default function Home() {
   }
 
   const mapDatabaseFiles = () => {
+    // TODO: return something else if paths array is empty
     return (
-      p.map(
+      paths.map(
         (databasePath) =>
           <Flex
             mih={40}
@@ -113,46 +117,61 @@ export default function Home() {
   return (
     <>
       <Title>Home</Title>
-      <Modal opened={opened} onClose={close} title="Create new password database" size="md">
-        <Box maw={340} mx="auto">
-          <form onSubmit={form.onSubmit(() => {
-            createDatabase()
-            close()
-          })}>
-            <PasswordInput
-              label="Password"
-              placeholder="Password"
-              {...form.getInputProps('password')}
-            />
+      {!isDatabaseOpened ? (
+        <>
+          <Modal opened={opened} onClose={close} title="Create new password database" size="md">
+            <Box maw={340} mx="auto">
+              <form onSubmit={form.onSubmit(() => {
+                createDatabase()
+                close()
+              })}>
+                <PasswordInput
+                  label="Password"
+                  placeholder="Password"
+                  {...form.getInputProps('password')}
+                />
 
-            <PasswordInput
-              mt="sm"
-              label="Confirm password"
-              placeholder="Confirm password"
-              {...form.getInputProps('confirmPassword')}
-            />
+                <PasswordInput
+                  mt="sm"
+                  label="Confirm password"
+                  placeholder="Confirm password"
+                  {...form.getInputProps('confirmPassword')}
+                />
 
-            <Group position="right" mt="md">
-              <Button type="submit" onClick={() => {
-                setPassword(String(form.values.confirmPassword))
-                console.log('test' + password)
-              }}>
-                Submit
-              </Button>
-            </Group>
-          </form>
-        </Box>
-      </Modal>
+                <Group position="right" mt="md">
+                  <Button type="submit" onClick={() => {
+                    setPassword(String(form.values.confirmPassword))
+                    console.log('test' + password)
+                  }}>
+                    Submit
+                  </Button>
+                </Group>
+              </form>
+            </Box>
+          </Modal>
 
-      <Center>
-        <Button onClick={open} color="green" size="md">Create Database</Button>
-        <Space w="md" />
-        <Button onClick={() => openDatabase()} size="md">Open Database</Button>
-      </Center>
-      <Space h='xl' />
-      <Title size={20}>Available databases:</Title>
-      {/* TODO: also save paths when successful open */}
-      {mapDatabaseFiles()}
+          <Center>
+            <Button onClick={open} color="green" size="md">Create Database</Button>
+            <Space w="md" />
+            <Button onClick={() => openDatabase()} size="md">Open Database</Button>
+          </Center>
+          <Space h='xl' />
+          <Title size={20}>Available databases:</Title>
+          {/* TODO: also save paths when successful open */}
+          {mapDatabaseFiles()}
+        </>
+      ) : (
+        <>
+          <Button color='red' onClick={
+            () => {
+              setIsDatabaseOpened(false)
+              console.log('database closed.')
+            }
+          }>Close database</Button>
+          <Text>DB Opened.</Text>
+        </>
+      )}
+
     </>
   );
 }
