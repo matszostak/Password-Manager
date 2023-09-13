@@ -18,7 +18,7 @@ export default function Home() {
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     if (pathOfNewDB) {
-      paths.push(String(pathOfNewDB))
+      paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       console.log("Password: " + password)
       console.log("Path: " + pathOfNewDB)
       form.reset()
@@ -72,6 +72,7 @@ export default function Home() {
                 modals.closeAll()
                 openExistingDatabase(openpass, String(selected))
                 setIsDatabaseOpened(true)
+                paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : console.log("This item already exists");
               }}>
                 Open
               </Button>
@@ -92,6 +93,37 @@ export default function Home() {
     return openpass
   }
 
+  const openDatabaseWithExactPath = async (exactPath: string) => {
+    let openpass: string = ''
+    let tempArr: string[] = exactPath.split('\\')
+    let dbName = tempArr.at(-1)
+    modals.open({
+      title: `Opening database ${dbName}`,
+      children: (
+        <Box maw={340} mx="auto">
+          <PasswordInput
+            label="Password"
+            placeholder="Password"
+            onChange={(e) => {
+              openpass = e.target.value
+              console.log(openpass)
+            }}
+          />
+          <Group position="right" mt="md">
+            <Button onClick={() => {
+              modals.closeAll()
+              openExistingDatabase(openpass, String(exactPath))
+              setIsDatabaseOpened(true)
+            }}>
+              Open
+            </Button>
+          </Group>
+        </Box>
+      ),
+    })
+    return openpass
+  }
+
   const mapDatabaseFiles = () => {
     // TODO: return something else if paths array is empty
     return (
@@ -108,7 +140,7 @@ export default function Home() {
             <Group w={360}>
               <Text key={databasePath}>{databasePath}</Text>
             </Group>
-            <Button variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
+            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
           </Flex>
       )
     )
@@ -157,7 +189,6 @@ export default function Home() {
           </Center>
           <Space h='xl' />
           <Title size={20}>Available databases:</Title>
-          {/* TODO: also save paths when successful open */}
           {mapDatabaseFiles()}
         </>
       ) : (
