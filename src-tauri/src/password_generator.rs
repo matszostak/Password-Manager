@@ -7,7 +7,7 @@ use passwords::PasswordGenerator;
 
 
 #[tauri::command]
-pub fn generate_random_password(
+pub fn generate_password(
     password_length: usize,
     password_numbers: bool,
     password_lowercase: bool,
@@ -28,10 +28,30 @@ pub fn generate_random_password(
     };
     let generated: Result<String, &str> = pg.generate_one();
     // TODO: check strength here
+    println!("{}", generated.clone().unwrap().to_string());
     return generated.unwrap().to_string();
 }
 
+// TODO
 #[tauri::command]
-pub fn generate_random_passphrase() -> String {
+pub fn generate_passphrase() -> String {
     return "".to_string();
+}
+
+#[tauri::command]
+pub fn generate_default_options() -> String {
+    let pg = PasswordGenerator {
+        length: 32,
+        numbers: true,
+        lowercase_letters: true,
+        uppercase_letters: true,
+        symbols: false,
+        spaces: false,
+        exclude_similar_characters: true,
+        strict: true, // leave it to true
+    };
+    let generated: Result<String, &str> = pg.generate_one();
+    println!("{}", generated.clone().unwrap().to_string());
+    // TODO: check strength here
+    return generated.unwrap().to_string();
 }

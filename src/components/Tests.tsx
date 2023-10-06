@@ -7,6 +7,7 @@ import { invoke } from '@tauri-apps/api';
 import { open } from '@tauri-apps/api/dialog';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
+import { generateDefault, generatePassphrase, generatePassword} from '../utils/passwordGeneration'
 
 export default function Tests() {
   const fileContent: any = ''
@@ -51,7 +52,6 @@ export default function Tests() {
       setValue(JSON.parse(String(msg)))
     })
   }
-
   return (
     <>
       <Title>Tests</Title>
@@ -79,6 +79,9 @@ export default function Tests() {
       >
         Show
       </Button>
+      <Button onClick={() =>
+        generatePassword(32, true, true, true, true, true, true, true)
+      }>P</Button>
     </>
   );
 }
