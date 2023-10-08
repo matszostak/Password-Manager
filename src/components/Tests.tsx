@@ -52,6 +52,9 @@ export default function Tests() {
       setValue(JSON.parse(String(msg)))
     })
   }
+  async function genPassphrase(length: number) {
+    await invoke('generate_passphrase', {length: length})
+  }
   return (
     <>
       <Title>Tests</Title>
@@ -82,6 +85,10 @@ export default function Tests() {
       <Button onClick={() =>
         generatePassword(32, true, true, true, true, true, true, true)
       }>P</Button>
+      
+      <Button onClick={() =>
+        genPassphrase(4)
+      }>RNG Test</Button>
     </>
   );
 }

@@ -4,7 +4,7 @@
 // also look at scoring
 
 use passwords::PasswordGenerator;
-
+use rand::Rng;
 
 #[tauri::command]
 pub fn generate_password(
@@ -32,12 +32,6 @@ pub fn generate_password(
     return generated.unwrap().to_string();
 }
 
-// TODO
-#[tauri::command]
-pub fn generate_passphrase() -> String {
-    return "".to_string();
-}
-
 #[tauri::command]
 pub fn generate_default_options() -> String {
     let pg = PasswordGenerator {
@@ -54,4 +48,14 @@ pub fn generate_default_options() -> String {
     println!("{}", generated.clone().unwrap().to_string());
     // TODO: check strength here
     return generated.unwrap().to_string();
+}
+
+// TODO
+#[tauri::command]
+pub fn generate_passphrase(length: u32) -> String {
+    for _i in 0..length {
+        let num = rand::thread_rng().gen_range(0..100);
+        println!("{}", num)
+    }
+    return "".to_string();
 }
