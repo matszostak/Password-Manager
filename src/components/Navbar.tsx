@@ -9,7 +9,6 @@ import {
 import { Link } from 'react-router-dom';
 import { useStyles } from '../utils/styles';
 
-
 const data = [
   { link: '/', label: 'Passwords', icon: IconBellRinging },
   { link: '/security', label: 'Security', icon: IconFingerprint },
@@ -20,7 +19,7 @@ const data = [
 
 export function NavbarSimple({ isOpened }: { isOpened: any }) {
   const { classes, cx } = useStyles();
-  let highlighted: string = ''
+  let highlighted: string = data[0].label // set highlited to the home page so it is highlited on startup
   const [active, setActive] = useState(highlighted);
 
   const links = data.map((item) => (
