@@ -1,13 +1,18 @@
 {
     "name": "",
-    "encryption": "",
+    "creationdate": "",
     "vault": [
         {
             "id": "",
             "username": "",
             "password": "",
             "urls": [],
-            "notes": ""
+            "notes": "",
+            "metadata": {
+                "created": "",
+                "lastmodified": "",
+                "timesmodified": 0
+            }
         }
     ]
 }

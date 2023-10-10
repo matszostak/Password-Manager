@@ -12,7 +12,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             file_operations::create_new_database, 
             file_operations::decrypt_database,
-            file_operations::encrypt_database, // TODO: add a command to generate passwords using random numbers and stuff
+            file_operations::encrypt_database,
             password_generator::generate_password,
             password_generator::generate_passphrase,
             password_generator::generate_default_options
