@@ -125,7 +125,6 @@ export default function Home() {
   }
 
   const mapDatabaseFiles = () => {
-    // TODO: return something else if paths array is empty
     return (
       paths.map(
         (databasePath) =>
@@ -140,10 +139,17 @@ export default function Home() {
             <Group w={360}>
               <Text key={databasePath}>{databasePath}</Text>
             </Group>
-            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
+            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button>
           </Flex>
       )
     )
+  }
+
+  let availableOrCreateNew = <></>
+  if (paths.length !== 0) {
+    availableOrCreateNew = <Title size={20}>Available databases:</Title>
+  } else {
+    availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
 
   return (
@@ -188,7 +194,7 @@ export default function Home() {
             <Button onClick={() => openDatabase()} size="md">Open Database</Button>
           </Center>
           <Space h='xl' />
-          <Title size={20}>Available databases:</Title>
+          {availableOrCreateNew}
           {mapDatabaseFiles()}
         </>
       ) : (
@@ -202,7 +208,6 @@ export default function Home() {
           <Text>DB Opened.</Text>
         </>
       )}
-
     </>
   );
 }
