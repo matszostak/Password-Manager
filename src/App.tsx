@@ -1,6 +1,7 @@
 /* React Imports */
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { useEffect, useState } from 'react';
+/* Tauri Imports */
 import { exists, writeFile, createDir } from '@tauri-apps/api/fs'
 
 /* Mantine Imports */
@@ -16,8 +17,10 @@ import {
   Burger,
 } from '@mantine/core';
 import { useMantineTheme } from '@mantine/styles';
+import { Notifications } from '@mantine/notifications';
+import { ModalsProvider } from '@mantine/modals';
 
-/* App Improts */
+/* App Imports */
 import Home from './components/Home';
 import { getAppStyles } from './utils/styles';
 import { NavbarSimple } from './components/Navbar';
@@ -26,8 +29,6 @@ import Databases from './components/Databases';
 import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
-import { Notifications } from '@mantine/notifications';
-import { ModalsProvider } from '@mantine/modals';
 
 export default function App() {
   let defaultColorScheme: any = ''
