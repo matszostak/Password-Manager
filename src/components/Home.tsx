@@ -20,8 +20,6 @@ export default function Home() {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
-      console.log("Password: " + password)
-      console.log("Path: " + pathOfNewDB)
       form.reset()
       setIsDatabaseOpened(true)
     } else {
@@ -32,7 +30,6 @@ export default function Home() {
         icon: <IconX size="0.9rem" />,
         autoClose: 3600,
       })
-      console.log("Path is empty", pathOfNewDB)
       form.reset();
     }
 
@@ -65,7 +62,6 @@ export default function Home() {
               placeholder="Password"
               onChange={(e) => {
                 openpass = e.target.value
-                console.log(openpass)
               }}
             />
             <Group position="right" mt="md">
@@ -107,7 +103,6 @@ export default function Home() {
             placeholder="Password"
             onChange={(e) => {
               openpass = e.target.value
-              console.log(openpass)
             }}
           />
           <Group position="right" mt="md">
@@ -207,6 +202,7 @@ export default function Home() {
             }
           }>Close database</Button>
           <Text>DB Opened.</Text>
+          
         </>
       )}
     </>

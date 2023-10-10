@@ -16,7 +16,6 @@ export async function saveNewDatabase(password: string) {
         return filePath
     }
     else {
-        console.log('File path not specified.')
         return null
     }
     // save the path to some kind of file so that the app can access it later
@@ -24,13 +23,10 @@ export async function saveNewDatabase(password: string) {
 }
 
 export async function openExistingDatabase(password: string, selected: string) {
-    console.log('hello grom fileOps! password:', password, selected)
     const database_content = await invoke('decrypt_database', { path: selected, password: password })
     if (database_content === "\"{}\"") {
-        console.log('wrong password!')
         return "Wrong password!"
     } else {
-        console.log('good password!')
         console.log(database_content)
         return database_content
     }

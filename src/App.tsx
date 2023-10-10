@@ -100,6 +100,7 @@ export default function App() {
               header={
                 <Header height={70} p='md' className={`${classes.header} ` + (classes.headerOverrides)}>
                   <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
+                    {/*TODO: close navbar when a link is clicked*/}
                     <Burger opened={mobileNavOpened} onClick={() => setMobileNavOpened(o => !o)}
                       size='sm' mr='xl' color={useMantineTheme().colors.gray[6]} />
                   </MediaQuery>
