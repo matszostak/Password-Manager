@@ -1,12 +1,13 @@
 import { save, open as open_tauri } from '@tauri-apps/api/dialog'
 import { invoke } from "@tauri-apps/api/tauri"
+import { fileExtensionWithDot, fileExtensionWithoutDot } from './constants';
 
 export async function saveNewDatabase(password: string) {
     console.log(password)
     const filePath = await save({
         filters: [{
-            name: '.secpass', //TODO: some extension or something
-            extensions: ['secpass'],
+            name: fileExtensionWithDot,
+            extensions: [fileExtensionWithoutDot],
         }]
     });
     console.log(filePath)

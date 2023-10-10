@@ -7,6 +7,7 @@ import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
+import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constants";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
@@ -49,8 +50,8 @@ export default function Home() {
     const selected = await open_tauri({
       multiple: false,
       filters: [{
-        name: '.secpass',
-        extensions: ['secpass']
+        name: fileExtensionWithDot,
+        extensions: [fileExtensionWithoutDot]
       }]
     });
     console.log('selected:', selected)

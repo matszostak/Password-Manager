@@ -42,8 +42,8 @@ export default function Tests() {
     const selected = await open({
       multiple: false,
       filters: [{
-        name: '.secpass', //TODO: some extension or something
-        extensions: ['secpass'],
+        name: Constants.fileExtensionWithDot,
+        extensions: [Constants.fileExtensionWithoutDot],
       }]
     });
     await invoke('decrypt_database', { path: selected, password: "aaaa" }).then(msg => {
