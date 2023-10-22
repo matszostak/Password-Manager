@@ -59,3 +59,4 @@ pub fn generate_passphrase(length: u32) -> String {
     }
     return "".to_string();
 }
+// TODO: Look into https://docs.rs/zxcvbn/latest/zxcvbn/ and https://github.com/ctsrc/Pgen
