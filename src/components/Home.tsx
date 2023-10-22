@@ -7,6 +7,7 @@ import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
+import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constants";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
@@ -19,8 +20,6 @@ export default function Home() {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
-      console.log("Password: " + password)
-      console.log("Path: " + pathOfNewDB)
       form.reset()
       setIsDatabaseOpened(true)
     } else {
@@ -31,7 +30,6 @@ export default function Home() {
         icon: <IconX size="0.9rem" />,
         autoClose: 3600,
       })
-      console.log("Path is empty", pathOfNewDB)
       form.reset();
     }
 
@@ -49,8 +47,8 @@ export default function Home() {
     const selected = await open_tauri({
       multiple: false,
       filters: [{
-        name: '.secpass',
-        extensions: ['secpass']
+        name: fileExtensionWithDot,
+        extensions: [fileExtensionWithoutDot]
       }]
     });
     console.log('selected:', selected)
@@ -64,7 +62,6 @@ export default function Home() {
               placeholder="Password"
               onChange={(e) => {
                 openpass = e.target.value
-                console.log(openpass)
               }}
             />
             <Group position="right" mt="md">
@@ -106,7 +103,6 @@ export default function Home() {
             placeholder="Password"
             onChange={(e) => {
               openpass = e.target.value
-              console.log(openpass)
             }}
           />
           <Group position="right" mt="md">
@@ -125,7 +121,6 @@ export default function Home() {
   }
 
   const mapDatabaseFiles = () => {
-    // TODO: return something else if paths array is empty
     return (
       paths.map(
         (databasePath) =>
@@ -140,10 +135,17 @@ export default function Home() {
             <Group w={360}>
               <Text key={databasePath}>{databasePath}</Text>
             </Group>
-            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button> { /* TODO: Open database using this path specifically */}
+            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button>
           </Flex>
       )
     )
+  }
+
+  let availableOrCreateNew = <></>
+  if (paths.length !== 0) {
+    availableOrCreateNew = <Title size={20}>Available databases:</Title>
+  } else {
+    availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
 
   return (
@@ -188,7 +190,7 @@ export default function Home() {
             <Button onClick={() => openDatabase()} size="md">Open Database</Button>
           </Center>
           <Space h='xl' />
-          <Title size={20}>Available databases:</Title>
+          {availableOrCreateNew}
           {mapDatabaseFiles()}
         </>
       ) : (
@@ -200,9 +202,9 @@ export default function Home() {
             }
           }>Close database</Button>
           <Text>DB Opened.</Text>
+          
         </>
       )}
-
     </>
   );
 }

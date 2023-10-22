@@ -14,7 +14,7 @@
     "allowlist": {
       "fs": {
         "all" : true,
-        "scope": ["$APPDATA/data/*", "$DESKTOP/*"]
+        "scope": ["$APPDATA/**", "$DESKTOP/*"]
       },
       "clipboard": {
         "writeText": true,
