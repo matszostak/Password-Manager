@@ -54,8 +54,14 @@ pub fn generate_default_options() -> String {
 #[tauri::command]
 pub fn generate_passphrase(length: u32) -> String {
     for _i in 0..length {
-        let num = rand::thread_rng().gen_range(0..100);
-        println!("{}", num)
+        let mut index: i32 = 0;
+        for _j in 1..6 {
+            let num = rand::thread_rng().gen_range(1..7);
+            let _t: i32 = 10;
+            index = index + (num * _t.pow(5 - _j));
+            println!("{}", _j);
+        }
+        println!("{}", index)
     }
     return "".to_string();
 }

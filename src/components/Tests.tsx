@@ -88,7 +88,7 @@ export default function Tests() {
       
       <Button onClick={() =>
         genPassphrase(4)
-      }>RNG Test</Button>
+      }>RNG Test (passphrase test)</Button>
     </>
   );
 }

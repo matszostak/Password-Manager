@@ -15,7 +15,7 @@ pub fn create_new_database(path: String, password: String) {
     println!("PASSWORD: {}", password);
 
     // TODO: encrypt file with password and basically handle key creation
-    let template_path = Path::new("src\\db_template.json");
+    let template_path = Path::new("src\\res\\db_template.json");
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
         let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
