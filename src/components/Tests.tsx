@@ -53,7 +53,8 @@ export default function Tests() {
     })
   }
   async function genPassphrase(length: number) {
-    await invoke('generate_passphrase', {length: length})
+    let generatedPassphrase = await invoke('generate_passphrase', {length: length})
+    console.log(generatedPassphrase)
   }
   return (
     <>
@@ -86,8 +87,10 @@ export default function Tests() {
         generatePassword(32, true, true, true, true, true, true, true)
       }>P</Button>
       
-      <Button onClick={() =>
-        genPassphrase(4)
+      <Button onClick={() => 
+        {
+          genPassphrase(4)
+        }
       }>RNG Test (passphrase test)</Button>
     </>
   );

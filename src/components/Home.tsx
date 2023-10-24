@@ -1,7 +1,7 @@
 import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
@@ -10,9 +10,18 @@ import { IconX } from "@tabler/icons-react";
 import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constants";
 
 export default function Home() {
+  useEffect(() => {
+    let savedPaths = localStorage.getItem('savedPaths')
+    if (savedPaths !== '[]') {
+      console.log('saaaaaaaaaaaaaaaaaaasaasassasasa' + savedPaths)
+    } else {
+      console.log('no saved paths')
+    }
+  })
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
+  // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
   const [isDatabaseOpened, setIsDatabaseOpened] = useState(false)
 
