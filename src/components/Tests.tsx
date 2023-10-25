@@ -52,8 +52,8 @@ export default function Tests() {
       setValue(JSON.parse(String(msg)))
     })
   }
-  async function genPassphrase(length: number) {
-    let generatedPassphrase = await invoke('generate_passphrase', {length: length})
+  async function genPassphrase(length: number, include_numbers: boolean, specialCharType: string) {
+    let generatedPassphrase = await invoke('generate_passphrase', {length: length, numbers: include_numbers, specialCharType: specialCharType})
     console.log(generatedPassphrase)
   }
   return (
@@ -89,7 +89,7 @@ export default function Tests() {
       
       <Button onClick={() => 
         {
-          genPassphrase(4)
+          genPassphrase(4, true, "_")
         }
       }>RNG Test (passphrase test)</Button>
     </>
