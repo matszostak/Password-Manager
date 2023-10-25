@@ -9,20 +9,32 @@ import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constants";
 
+import * as Constants from '../utils/constants'
+import { BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
+import { useSelectionState } from "@mantine/core/lib/TransferList/use-selection-state/use-selection-state";
+
+
 export default function Home() {
-  useEffect(() => {
-    let savedPaths = localStorage.getItem('savedPaths')
-    if (savedPaths !== '[]') {
-      console.log('saaaaaaaaaaaaaaaaaaasaasassasasa' + savedPaths)
-    } else {
-      console.log('no saved paths')
-    }
-  })
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // TODO: save created paths or opened paths to file
+  useState(() => { 
+    const handleRead = async () => {
+      const f: string = Constants.profileFile
+      const contents: string = await (readTextFile(f, { dir: BaseDirectory.AppData }))
+      console.log(JSON.parse(contents).savedPaths)
+      for (const p of JSON.parse(contents).savedPaths) {
+        paths.push(p) // TODO: push only if element does not exist in array
+      }
+    }
+    handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
+  })
+  
   const [isDatabaseOpened, setIsDatabaseOpened] = useState(false)
 
   const createDatabase = async () => {

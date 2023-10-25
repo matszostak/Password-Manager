@@ -31,6 +31,7 @@ import * as Constants from './utils/constants'
 import Tests from './components/Tests';
 
 export default function App() {
+  // TODO: I can start using a default color scheme loaded from the AppData file
   let defaultColorScheme: any = ''
   if (localStorage.getItem('savedColorScheme')) {
     defaultColorScheme = localStorage.getItem('savedColorScheme')
@@ -42,10 +43,10 @@ export default function App() {
     localStorage.setItem('savedColorScheme', color)
     setColorScheme(color);
     localStorage.setItem('colorScheme', color)
-    // save preference to file and load it from there OR check if preference in localStorage exists and use it
+    // TODO: save preference to file and load it from there OR check if preference in localStorage exists and use it
   }
 
-  const createDataFolder = async () => {
+  const createDataFolder = async () => { // TODO: that folder might no longer be necessary
     console.log('createDataFolder')
     await createDir("data", {
       dir: Constants.folderPath,
