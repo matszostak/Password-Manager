@@ -23,7 +23,7 @@ export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   // TODO: save created paths or opened paths to file
-  useState(() => { 
+  useState(() => {
     const handleRead = async () => {
       const f: string = Constants.profileFile
       const contents: string = await (readTextFile(f, { dir: BaseDirectory.AppData }))
@@ -34,7 +34,7 @@ export default function Home() {
     }
     handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
   })
-  
+
   const [isDatabaseOpened, setIsDatabaseOpened] = useState(false)
 
   const createDatabase = async () => {
@@ -109,7 +109,6 @@ export default function Home() {
         ),
       })
     } else {
-      console.log('no file selected')
       notifications.show({
         message: 'Please select a valid database file.',
         title: 'You have to choose a database file!',

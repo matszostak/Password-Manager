@@ -2,7 +2,8 @@
 
 use passwords::PasswordGenerator;
 use rand::Rng;
-use std::{fs, collections::HashMap};
+use std::{fs, collections::HashMap, time::Instant};
+
 
 #[tauri::command]
 pub fn generate_password(
@@ -48,18 +49,30 @@ pub fn generate_default_options() -> String {
     return generated.unwrap().to_string();
 }
 
-// TODO: this code is absolutely disgusting.
-#[tauri::command]
-pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String) -> String {
+lazy_static! {
+    static ref HASHMAP: HashMap<i32, String> = {
+        let m = load_database();
+        m
+    };
+}
+fn load_database() -> HashMap<i32, String> {
     let file_path = "src\\res\\eff_large_wordlist.txt"; 
-    let contents = fs::read_to_string(file_path).unwrap(); // TODO: File is laoded every time this function is used. It might be good idea to change it 
+    let contents = fs::read_to_string(file_path).unwrap();
     let mut map = HashMap::new();
-    let mut password = "".to_string();
+    
 
     for line in contents.lines() {
         let parts: Vec<&str> = line.split_whitespace().collect();
         map.insert(parts[0].to_string().parse::<i32>().unwrap(), parts[1].to_string());
     }
+    return map;
+}
+
+// TODO: this code is absolutely disgusting.
+#[tauri::command]
+pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String) -> String {
+    let before = Instant::now();
+    let mut password = "".to_string();
 
     for _i in 0..length {
         let mut index: i32 = 0;
@@ -68,7 +81,7 @@ pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String
             let t: i32 = 10;
             index = index + (num * t.pow(5 - _j));
         }
-        let mut word: String = capitalize_first_letter(&map.get(&index).unwrap());
+        let mut word: String = capitalize_first_letter(&HASHMAP.get(&index).unwrap());
         if numbers {
             word = word + rand::thread_rng().gen_range(0..10).to_string().as_str();
         } 
@@ -80,6 +93,7 @@ pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String
     password = tmp_password.as_str().to_string();
 
     println!("Pass: {}", password);
+    println!("Elapsed time: {:.2?}", before.elapsed());
     return password;
 }
 

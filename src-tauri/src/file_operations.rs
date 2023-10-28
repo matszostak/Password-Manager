@@ -1,10 +1,9 @@
 use serde_json;
 use std::{fs, path::Path, str};
 
-use super::aes_encryption::encrypt;
 use super::aes_encryption::decrypt;
+use super::aes_encryption::encrypt;
 use super::key_derivation::generate_key_from_password_argon2;
-
 
 #[tauri::command]
 pub fn create_new_database(path: String, password: String) {
@@ -39,7 +38,8 @@ pub fn create_new_database(path: String, password: String) {
 }
 
 #[tauri::command]
-pub fn decrypt_database(path: String, password: String)  -> String { // TODO: finish decryption
+pub fn decrypt_database(path: String, password: String) -> String {
+    // TODO: finish decryption
     if !Path::new(&path).exists() {
         return "Path does not exist".to_string();
     }
@@ -63,7 +63,8 @@ pub fn decrypt_database(path: String, password: String)  -> String { // TODO: fi
         let decrypted = decrypted_result.ok().unwrap();
         let decrypted_string = str::from_utf8(&decrypted).unwrap();
         println!("Decrypted response: {:?}", decrypted_string);
-        let res: serde_json::Value = serde_json::from_str(&decrypted_string).expect("Unable to parse");
+        let res: serde_json::Value =
+            serde_json::from_str(&decrypted_string).expect("Unable to parse");
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
         print!("{}", pretty);
         return pretty;
@@ -74,7 +75,11 @@ pub fn decrypt_database(path: String, password: String)  -> String { // TODO: fi
 }
 
 #[tauri::command]
-pub fn encrypt_database(path: String, password: String /* password will be stored somewhere when DB is successfully decrypted */) { // TODO: finish encryption
+pub fn encrypt_database(
+    path: String,
+    password: String, /* password will be stored somewhere when DB is successfully decrypted */
+) {
+    // TODO: finish encryption
     let old_file_contents = fs::read(path).unwrap();
     let salt = &old_file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
     let iv = &old_file_contents[16..32]; // TODO: change IV?

@@ -7,6 +7,9 @@ mod hash;
 mod aes_encryption;
 mod password_generator;
 
+#[macro_use]
+extern crate lazy_static;
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
