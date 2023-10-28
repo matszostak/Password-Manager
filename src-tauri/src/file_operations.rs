@@ -40,6 +40,9 @@ pub fn create_new_database(path: String, password: String) {
 
 #[tauri::command]
 pub fn decrypt_database(path: String, password: String)  -> String { // TODO: finish decryption
+    if !Path::new(&path).exists() {
+        return "Path does not exist".to_string();
+    }
     let file_contents = fs::read(path).unwrap();
     let salt = &file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
     let iv = &file_contents[16..32]; // TODO: change IV?

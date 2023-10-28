@@ -86,10 +86,20 @@ export default function Home() {
               }}
             />
             <Group position="right" mt="md">
-              <Button onClick={() => {
+              <Button onClick={async () => {
                 modals.closeAll()
-                openExistingDatabase(openpass, String(selected))
-                setIsDatabaseOpened(true)
+                let check = await openExistingDatabase(openpass, String(selected))
+                if (check === "Database does not exist." || check === "Wrong password!") {
+                  notifications.show({
+                    message: 'Reason: ' + check,
+                    title: 'Could not open database!',
+                    color: "red",
+                    icon: <IconX size="0.9rem" />,
+                    autoClose: 3600,
+                  })
+                } else {
+                  setIsDatabaseOpened(true)
+                }
                 paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : console.log("This item already exists");
               }}>
                 Open
@@ -127,10 +137,21 @@ export default function Home() {
             }}
           />
           <Group position="right" mt="md">
-            <Button onClick={() => {
+            <Button onClick={async () => {
+              console.log('asdadadsadsadasdas')
               modals.closeAll()
-              openExistingDatabase(openpass, String(exactPath))
-              setIsDatabaseOpened(true)
+              let check = await openExistingDatabase(openpass, String(exactPath))
+              if (check === "Database does not exist." || check === "Wrong password!") {
+                notifications.show({
+                  message: 'Reason: ' + check,
+                  title: 'Could not open database!',
+                  color: "red",
+                  icon: <IconX size="0.9rem" />,
+                  autoClose: 3600,
+                })
+              } else {
+                setIsDatabaseOpened(true)
+              }
             }}>
               Open
             </Button>
@@ -223,7 +244,6 @@ export default function Home() {
             }
           }>Close database</Button>
           <Text>DB Opened.</Text>
-          
         </>
       )}
     </>

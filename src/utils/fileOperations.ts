@@ -24,7 +24,11 @@ export async function saveNewDatabase(password: string) {
 
 export async function openExistingDatabase(password: string, selected: string) {
     const database_content = await invoke('decrypt_database', { path: selected, password: password })
-    if (database_content === "\"{}\"") {
+    console.log(database_content)
+    if (database_content === "Path does not exist") {
+        return "Database does not exist."
+    }
+    else if (database_content === "\"{}\"") {
         return "Wrong password!"
     } else {
         console.log(database_content)
