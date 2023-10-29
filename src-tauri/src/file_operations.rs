@@ -1,3 +1,7 @@
+
+use rand::RngCore;
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 use serde_json;
 use std::{fs, path::Path, str};
 
@@ -7,8 +11,13 @@ use super::key_derivation::generate_key_from_password_argon2;
 
 #[tauri::command]
 pub fn create_new_database(path: String, password: String) {
-    let salt = b"dmVyeXNlY3VyZXNh"; //TODO: change salt stuff, somehow generate it and save it to file!!!
-    let key = generate_key_from_password_argon2(password.as_bytes(), salt);
+    let mut source_rng = rand::thread_rng();
+    let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap(); 
+    let mut salt: [u8; 16] = [0u8; 16];
+    rng.fill_bytes(&mut salt); 
+    println!("{:?}", salt);
+
+    let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
 
     println!("Key: {}", hex::encode(key));
     println!("PASSWORD: {}", password);
