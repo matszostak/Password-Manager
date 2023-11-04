@@ -43,7 +43,8 @@ export default function Home() {
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
-      setIsDatabaseOpened(true)
+      // setIsDatabaseOpened(true) <- maybe TODO - right now the database is immediately encrypted on create so it cannot return a nice JSON, but it works pretty well now
+      // (note: user creates db, db is encrypted, user has to open db to start.)
     } else {
       notifications.show({
         message: 'Please create a database file.',
@@ -54,7 +55,6 @@ export default function Home() {
       })
       form.reset();
     }
-
   }
 
   const form = useForm({
