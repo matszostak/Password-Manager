@@ -20,6 +20,7 @@ export default function Home() {
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
+  const [dbContent, setDbContent] = useState('')
   const [refreshKey, setRefreshKey] = useState(0);
 
   // TODO: save created paths or opened paths to file
@@ -88,7 +89,7 @@ export default function Home() {
             <Group position="right" mt="md">
               <Button onClick={async () => {
                 modals.closeAll()
-                let check = await openExistingDatabase(openpass, String(selected))
+                let check: string = String(await openExistingDatabase(openpass, String(selected)))
                 if (check === "Database does not exist." || check === "Wrong password!") {
                   notifications.show({
                     message: 'Reason: ' + check,
@@ -99,6 +100,8 @@ export default function Home() {
                   })
                 } else {
                   setIsDatabaseOpened(true)
+                  setDbContent(check)
+                  return check
                 }
                 paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : console.log("This item already exists");
               }}>
@@ -139,7 +142,7 @@ export default function Home() {
             <Button onClick={async () => {
               console.log('asdadadsadsadasdas')
               modals.closeAll()
-              let check = await openExistingDatabase(openpass, String(exactPath))
+              let check: string = String(await openExistingDatabase(openpass, String(exactPath)))
               if (check === "Database does not exist." || check === "Wrong password!") {
                 notifications.show({
                   message: 'Reason: ' + check,
@@ -150,6 +153,8 @@ export default function Home() {
                 })
               } else {
                 setIsDatabaseOpened(true)
+                setDbContent(check)
+                return check
               }
             }}>
               Open
@@ -240,9 +245,11 @@ export default function Home() {
             () => {
               setIsDatabaseOpened(false)
               console.log('database closed.')
+              setDbContent('')
             }
           }>Close database</Button>
           <Text>DB Opened.</Text>
+          {dbContent}
         </>
       )}
     </>
