@@ -1,7 +1,7 @@
 import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
@@ -11,7 +11,7 @@ import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constant
 
 import * as Constants from '../utils/constants'
 import { BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
-import { useSelectionState } from "@mantine/core/lib/TransferList/use-selection-state/use-selection-state";
+import Database from "./Database";
 
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
   const [dbContent, setDbContent] = useState('')
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [_refreshKey, setRefreshKey] = useState(0);
 
   // TODO: save created paths or opened paths to file
   useState(() => {
@@ -249,7 +249,7 @@ export default function Home() {
             }
           }>Close database</Button>
           <Text>DB Opened.</Text>
-          {dbContent}
+          <Database databaseContent={String(dbContent)} />
         </>
       )}
     </>

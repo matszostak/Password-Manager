@@ -25,7 +25,6 @@ import Home from './components/Home';
 import { getAppStyles } from './utils/styles';
 import { NavbarSimple } from './components/Navbar';
 import Security from './components/Security';
-import Databases from './components/Databases';
 import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
@@ -70,7 +69,7 @@ export default function App() {
     }
   };
 
-  const checkFiles = async () => {
+  const checkFiles = async () => { // TODO: check all files
     let optionsFolderExists = await exists(Constants.profileFile, { dir: Constants.folderPath })
     console.log('checking files')
     console.log(optionsFolderExists)
@@ -114,7 +113,6 @@ export default function App() {
               <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/security' element={<Security />} />
-                <Route path='/databases' element={<Databases />} />
                 <Route path='/settings' element={<Settings />} />
                 <Route path='/tests' element={<Tests />} />
               </Routes>
