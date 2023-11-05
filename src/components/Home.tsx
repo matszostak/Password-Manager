@@ -6,7 +6,7 @@ import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
 import { notifications } from "@mantine/notifications";
-import { IconX } from "@tabler/icons-react";
+import { IconX, IconCheck } from "@tabler/icons-react";
 import { fileExtensionWithDot, fileExtensionWithoutDot } from "../utils/constants";
 
 import * as Constants from '../utils/constants'
@@ -40,12 +40,22 @@ export default function Home() {
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
+    console.log('this notification 0')
     if (pathOfNewDB) {
+      console.log('this notification 1')
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
       // setIsDatabaseOpened(true) <- maybe TODO - right now the database is immediately encrypted on create so it cannot return a nice JSON, but it works pretty well now
       // (note: user creates db, db is encrypted, user has to open db to start.)
+      notifications.show({
+        message: 'Database was created. Open it using Your password!',
+        title: 'Database created!',
+        color: 'green',
+        icon: <IconCheck size="0.9rem" />,
+        autoClose: 3600,
+      })
     } else {
+      console.log('this notification 2')
       notifications.show({
         message: 'Please create a database file.',
         title: 'Database file not created!',
