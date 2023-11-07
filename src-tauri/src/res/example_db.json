@@ -1,0 +1,54 @@
+{
+    "name": "the_vault_name",
+    "creationdate": "2023-10-31T10:06:34+00:00",
+    "vault": [
+        {
+            "id": "13d38363-dc3a-4cff-98c6-0a8370f96975",
+            "username": "admin1",
+            "password": "password1",
+            "urls": ["https://url1.com/", "https://url2.com/"],
+            "notes": "note1",
+            "metadata": {
+                "created": "2023-11-01T10:06:34+00:00",
+                "lastmodified": "2023-11-06T11:06:34+00:00",
+                "timesmodified": 11
+            }
+        },
+        {
+            "id": "d56df72-5202-460b-a3b6-78a1385564c8",
+            "username": "admin2",
+            "password": "password2",
+            "urls": ["https://url1.com/", "https://url2.com/", "https://url3.com/"],
+            "notes": "note2",
+            "metadata": {
+                "created": "2023-11-02T10:06:34+00:00",
+                "lastmodified": "2023-11-06T12:06:34+00:00",
+                "timesmodified": 2
+            }
+        },
+        {
+            "id": "3707908f-ee73-4c55-8056-d65e1625c1e9",
+            "username": "admin3",
+            "password": "password3",
+            "urls": ["https://url1.com/", "https://url2.com/", "https://url3.com/", "https://url4.com/"],
+            "notes": "note3",
+            "metadata": {
+                "created": "2023-11-03T10:06:34+00:00",
+                "lastmodified": "2023-11-06T13:06:34+00:00",
+                "timesmodified": 9
+            }
+        },
+        {
+            "id": "2f5c5fa1-e457-4cb1-a65a-a494c9b13322",
+            "username": "admin4",
+            "password": "password4",
+            "urls": ["https://url1.com/", "https://url2.com/", "https://url3.com/", "https://url4.com/", "https://url5.com/"],
+            "notes": "note4",
+            "metadata": {
+                "created": "2023-11-04T10:06:34+00:00",
+                "lastmodified": "2023-11-06T14:06:34+00:00",
+                "timesmodified": 5
+            }
+        }
+    ]
+}
