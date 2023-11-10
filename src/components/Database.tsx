@@ -1,8 +1,6 @@
-import { Box, Group, Button, Collapse } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-
-
-
+import { useState } from "react"
 
 export default function Database({ databaseContent }: { databaseContent: string }) {
     let parsedContent = JSON.parse(databaseContent)
@@ -24,17 +22,40 @@ export default function Database({ databaseContent }: { databaseContent: string 
                 </Group>
 
                 <Collapse in={opened}>
-                <div>{entry.id + '|' + entry.username + '|' + entry.password + '|' + entry.urls + '|' + entry.notes + '|' + entry.metadata.created}</div>
+                    <div>{entry.id + '|' + entry.username + '|' + entry.password + '|' + entry.urls + '|' + entry.notes + '|' + entry.metadata.created}</div>
                 </Collapse>
             </Box>
         );
     }
 
+    const [rowClicked, setRowClicked] = useState(false)
     const map_password = dbVault.map(
         (entry: any) =>
             <>
-                <div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>
-                
+                {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
+
+                {rowClicked ? (
+                    <tr key={entry.id} onClick={() => {
+                        setRowClicked(!rowClicked)
+                        console.log(rowClicked)
+                    }}>
+                        <td>{entry.username}</td>
+                        <td>{entry.urls}</td>
+                        <td>{entry.password}</td>
+                    </tr>
+                ) : (
+                    <tr key={entry.id} onClick={() => {
+                        setRowClicked(!rowClicked)
+                        console.log(rowClicked)
+                    }}>
+                        <td>{entry.username}</td>
+                        <td>{entry.urls}</td>
+                        <td>
+                            <Button h={30}>Copy password</Button>
+                        </td>
+
+                    </tr>
+                )}
             </>
     )
 
@@ -57,7 +78,16 @@ export default function Database({ databaseContent }: { databaseContent: string 
             <div>========================</div>
             <div>========================</div>
             <div>========================</div>*/}
-            {map_password}
+            <Table highlightOnHover>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>URL</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>{map_password}</tbody>
+            </Table>
         </>
         // TODO: handle change and saving the database here
     );

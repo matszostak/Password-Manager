@@ -8,13 +8,13 @@ import { exists, writeFile, createDir } from '@tauri-apps/api/fs'
 import {
   MantineProvider,
   AppShell,
-  Header,
   ActionIcon,
   Group,
   Title,
   ColorScheme,
   MediaQuery,
   Burger,
+  Header,
 } from '@mantine/core';
 import { useMantineTheme } from '@mantine/styles';
 import { Notifications } from '@mantine/notifications';
