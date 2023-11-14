@@ -1,6 +1,8 @@
-import { Box, Group, Button, Collapse, Table } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
+import { IconEye, IconEyeClosed } from "@tabler/icons-react"
 import { useState } from "react"
+
 
 export default function Database({ databaseContent }: { databaseContent: string }) {
     let parsedContent = JSON.parse(databaseContent)
@@ -29,7 +31,7 @@ export default function Database({ databaseContent }: { databaseContent: string 
     }
 
     const [rowClicked, setRowClicked] = useState(false)
-    const map_password = dbVault.map(
+    const map_password_old = dbVault.map(
         (entry: any) =>
             <>
                 {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
@@ -59,6 +61,39 @@ export default function Database({ databaseContent }: { databaseContent: string 
             </>
     )
 
+    const [isVisible, setVisible] = useState(false);
+    const map_password = dbVault.map(
+        (entry: any) =>
+            <>
+                {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
+
+                <tr key={entry.id} onClick={() => {
+                    setRowClicked(!rowClicked)
+                    console.log(rowClicked)
+                }}>
+                    <td>{entry.username}</td>
+                    <td>
+                        <span onClick={() => setVisible(!isVisible)}>
+                            {isVisible ?
+                                <div>************</div>
+                                :
+                                <div>{entry.password}</div>
+                            }
+                        </span>
+                    </td>
+                    <td>
+                        <span onClick={() => setVisible(!isVisible)}>
+                            {isVisible ?
+                                <IconEye />
+                                :
+                                <IconEyeClosed />
+                            }
+                        </span>
+                    </td>
+                    <td>{entry.urls}</td>
+                </tr>
+            </>
+    )
     return (
         <>
             {/*<div>Name: {name}</div>
@@ -78,16 +113,22 @@ export default function Database({ databaseContent }: { databaseContent: string 
             <div>========================</div>
             <div>========================</div>
             <div>========================</div>*/}
-            <Table highlightOnHover>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>URL</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>{map_password}</tbody>
-            </Table>
+            <ScrollArea w={550} h={400}>
+                <Box>
+                    <Table highlightOnHover>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Password</th>
+                                <th>    </th> {/* empty column for the icon */}
+                                <th>More</th>
+                            </tr>
+                        </thead>
+                        <tbody>{map_password}</tbody>
+                    </Table>
+                </Box>
+            </ScrollArea>
+
         </>
         // TODO: handle change and saving the database here
     );
