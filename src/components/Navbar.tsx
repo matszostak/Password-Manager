@@ -12,7 +12,7 @@ import { useStyles } from '../utils/styles';
 const data = [
   { link: '/', label: 'Passwords', icon: IconBellRinging },
   { link: '/security', label: 'Security', icon: IconFingerprint },
-  { link: '/databases', label: 'Databases', icon: IconDatabaseImport },
+  // { link: '/databases', label: 'Databases', icon: IconDatabaseImport },
   { link: '/settings', label: 'Settings', icon: IconSettings },
   { link: '/tests', label: 'Tests', icon: IconSettings },
 ];

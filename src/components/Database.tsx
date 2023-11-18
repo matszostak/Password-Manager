@@ -30,7 +30,7 @@ export default function Database({ databaseContent }: { databaseContent: string 
         );
     }
 
-    const [rowClicked, setRowClicked] = useState(false)
+    const [rowClicked, setRowClicked] = useState(true)
     const map_password_old = dbVault.map(
         (entry: any) =>
             <>
@@ -75,18 +75,18 @@ export default function Database({ databaseContent }: { databaseContent: string 
                     <td>
                         <span onClick={() => setVisible(!isVisible)}>
                             {isVisible ?
-                                <div>************</div>
-                                :
                                 <div>{entry.password}</div>
+                                :
+                                <div>************</div>
                             }
                         </span>
                     </td>
                     <td>
                         <span onClick={() => setVisible(!isVisible)}>
                             {isVisible ?
-                                <IconEye />
-                                :
                                 <IconEyeClosed />
+                                :
+                                <IconEye />
                             }
                         </span>
                     </td>

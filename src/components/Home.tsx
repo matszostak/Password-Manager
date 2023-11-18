@@ -206,7 +206,7 @@ export default function Home() {
 
   return (
     <>
-      <Title>Home</Title>
+      <Space h={60}/>
       {!isDatabaseOpened ? (
         <>
           <Modal opened={opened} onClose={close} title="Create new password database" size="md">
@@ -258,7 +258,6 @@ export default function Home() {
               setDbContent('')
             }
           }>Close database</Button>
-          <Text>DB Opened.</Text>
           <Database databaseContent={String(dbContent)} />
         </>
       )}
