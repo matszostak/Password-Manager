@@ -15,6 +15,7 @@ const data = [
   // { link: '/databases', label: 'Databases', icon: IconDatabaseImport },
   { link: '/settings', label: 'Settings', icon: IconSettings },
   { link: '/tests', label: 'Tests', icon: IconSettings },
+  { link: '/passwordgenerator', label: 'Password Generator', icon: IconSettings },
 ];
 
 export function NavbarSimple({ isOpened }: { isOpened: any }) {

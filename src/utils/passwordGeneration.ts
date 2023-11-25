@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api';
 export async function generateDefault() {
     let generated = await invoke('generate_default_options', {})
     console.log(generated)
+    return String(generated)
 }
 
 export async function generatePassword(

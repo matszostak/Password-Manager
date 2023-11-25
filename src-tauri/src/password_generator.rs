@@ -33,6 +33,7 @@ pub fn generate_password(
 
 #[tauri::command]
 pub fn generate_default_options() -> String {
+    println!("generating");
     let pg = PasswordGenerator {
         length: 32,
         numbers: true,

@@ -8,6 +8,7 @@ import { open } from '@tauri-apps/api/dialog';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { generateDefault, generatePassphrase, generatePassword} from '../utils/passwordGeneration'
+import PasswordGenerator from './PasswordGenerator';
 
 export default function Tests() {
   const fileContent: any = ''

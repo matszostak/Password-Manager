@@ -28,6 +28,7 @@ import Security from './components/Security';
 import Settings from './components/Settings';
 import * as Constants from './utils/constants'
 import Tests from './components/Tests';
+import PasswordGenerator from './components/PasswordGenerator';
 
 export default function App() {
   // TODO: I can start using a default color scheme loaded from the AppData file
@@ -115,6 +116,7 @@ export default function App() {
                 <Route path='/security' element={<Security />} />
                 <Route path='/settings' element={<Settings />} />
                 <Route path='/tests' element={<Tests />} />
+                <Route path='/passwordgenerator' element={<PasswordGenerator />} />
               </Routes>
             </AppShell>
           </BrowserRouter>
