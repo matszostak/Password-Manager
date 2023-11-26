@@ -7,15 +7,15 @@ export async function generateDefault() {
 }
 
 export async function generatePassword(
-        len: number,
-        nums: boolean,
-        lower: boolean,
-        upper: boolean,
-        symbols: boolean,
-        special: boolean,
-        similar: boolean,
-        strict: boolean
-    ) {
+    len: number,
+    nums: boolean,
+    lower: boolean,
+    upper: boolean,
+    symbols: boolean,
+    special: boolean,
+    similar: boolean,
+    _strict: boolean
+) {
     let generated = await invoke('generate_password', {
         passwordLength: len,
         passwordNumbers: nums,
@@ -24,12 +24,23 @@ export async function generatePassword(
         passwordSymbols: symbols,
         passwordSpaces: special,
         passwordSimilar: similar,
-        passwordStrict: strict, // leave it to true
+        passwordStrict: true, // TODO: leave it to true for now
     })
     console.log(generated)
     return generated
 }
-
-export async function generatePassphrase() {
-
+//passphrase_length: u32, passphrase_numbers: bool, passphrase_special_char_type: String
+export async function generatePassphrase(
+    len: number,
+    nums: boolean,
+    specialCharacter: string
+) {
+    let generated = await invoke('generate_passphrase', {
+        passphraseLength: len,
+        passphraseNumbers: nums,
+        passphraseSpecialCharType: specialCharacter
+    })
+    console.log(len)
+    console.log(generated)
+    return generated
 }

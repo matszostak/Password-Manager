@@ -71,11 +71,11 @@ fn load_database() -> HashMap<i32, String> {
 
 // TODO: this code is absolutely disgusting.
 #[tauri::command]
-pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String) -> String {
+pub fn generate_passphrase(passphrase_length: u32, passphrase_numbers: bool, passphrase_special_char_type: String) -> String {
     let before = Instant::now();
     let mut password = "".to_string();
 
-    for _i in 0..length {
+    for _i in 0..passphrase_length {
         let mut index: i32 = 0;
         for _j in 1..6 {
             let num = rand::thread_rng().gen_range(1..7);
@@ -83,10 +83,10 @@ pub fn generate_passphrase(length: u32, numbers: bool, special_char_type: String
             index = index + (num * t.pow(5 - _j));
         }
         let mut word: String = capitalize_first_letter(&HASHMAP.get(&index).unwrap());
-        if numbers {
+        if passphrase_numbers {
             word = word + rand::thread_rng().gen_range(0..10).to_string().as_str();
         } 
-        password = password.to_owned() + special_char_type.as_str() + word.as_str();
+        password = password.to_owned() + passphrase_special_char_type.as_str() + word.as_str();
     }
 
     let mut tmp_password = password.chars(); // this here cleans up the password

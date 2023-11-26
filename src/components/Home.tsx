@@ -187,11 +187,12 @@ export default function Home() {
             align="center"
             direction="row"
             wrap="nowrap"
+            key={databasePath}
           >
             <Group w={360}>
               <Text key={databasePath}>{databasePath}</Text>
             </Group>
-            <Button onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button>
+            <Button key={databasePath} onClick={() => openDatabaseWithExactPath(databasePath)} variant="outline" color="green" size="sm" w={80}>Open</Button>
           </Flex>
       )
     )

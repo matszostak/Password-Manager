@@ -8,14 +8,15 @@ import {
 } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import { useStyles } from '../utils/styles';
+import { randomId } from '@mantine/hooks';
 
 const data = [
-  { link: '/', label: 'Passwords', icon: IconBellRinging },
-  { link: '/security', label: 'Security', icon: IconFingerprint },
-  // { link: '/databases', label: 'Databases', icon: IconDatabaseImport },
-  { link: '/settings', label: 'Settings', icon: IconSettings },
-  { link: '/tests', label: 'Tests', icon: IconSettings },
-  { link: '/passwordgenerator', label: 'Password Generator', icon: IconSettings },
+  { link: '/', label: 'Passwords', icon: IconBellRinging, key: randomId() },
+  { link: '/security', label: 'Security', icon: IconFingerprint, key: randomId() },
+  // { link: '/databases', label: 'Databases', icon: IconDatabaseImport, key: randomId() },
+  { link: '/settings', label: 'Settings', icon: IconSettings, key: randomId() },
+  { link: '/tests', label: 'Tests', icon: IconSettings, key: randomId() },
+  { link: '/passwordgenerator', label: 'Password Generator', icon: IconSettings, key: randomId() },
 ];
 
 export function NavbarSimple({ isOpened }: { isOpened: any }) {
