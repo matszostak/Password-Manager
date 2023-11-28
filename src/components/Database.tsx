@@ -1,18 +1,17 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeClosed } from "@tabler/icons-react"
 import { useState } from "react"
 
 
-export default function Database({ databaseContent, setDatabaseContent, value2, setValue2 }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, value2: boolean, setValue2: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Database({ databaseContent, setDatabaseContent, isDbOpened, setIsDbOpened }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, isDbOpened: boolean, setIsDbOpened: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(databaseContent)
 
     let name: string = parsedContent.name // database name from JSON
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
 
-    console.log(dbVault)
-    console.log('tytyt', dbVault[0].metadata.timesmodified)
+    const [opened, { open, close }] = useDisclosure(false);
 
     function ExpandEntry(entry: any) {
         const [opened, { toggle }] = useDisclosure(false);
@@ -119,11 +118,18 @@ export default function Database({ databaseContent, setDatabaseContent, value2, 
                 <Box>
                     <Button color='red' onClick={
                         () => {
-                            setValue2(false)
+                            setIsDbOpened(false)
                             console.log('database closed.')
                             setDatabaseContent('')
                         }
                     }>Close database</Button>
+                    <Drawer opened={opened} onClose={close} title="Authentication">
+                        {
+                            <h1>lalallalalalala</h1>
+                        }
+                    </Drawer>
+
+                    <Button onClick={open}>Open Drawer</Button>
                     <Table highlightOnHover>
                         <thead>
                             <tr>

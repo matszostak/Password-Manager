@@ -32,10 +32,10 @@ export default function Home() {
     const handleRead = async () => {
       const f: string = Constants.profileFile
       const contents: string = await (readTextFile(f, { dir: BaseDirectory.AppData }))
-      console.log(JSON.parse(contents).savedPaths)
-      for (const p of JSON.parse(contents).savedPaths) {
-        paths.push(p) // TODO: push only if element does not exist in array
-      }
+      console.log(contents)
+      //for (const p of JSON.parse(contents).savedPaths) {
+      //  paths.push(p) // TODO: push only if element does not exist in array
+      //}
     }
     handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
   })
@@ -209,12 +209,10 @@ export default function Home() {
     availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
 
-  const [value1, setValue1] = useState(true);
-
   return (
     <>
-    {String(isDatabaseOpened)}
-    {String('there should be nothing: ' + dbContent)} {/* TODO: delete this stuff */}
+      {String(isDatabaseOpened)}
+      {String('there should be nothing: ' + dbContent)} {/* TODO: delete this stuff */}
 
       <Space h={60} />
       {!isDatabaseOpened ? (
@@ -261,11 +259,11 @@ export default function Home() {
         </>
       ) : (
         <>
-          <Database 
-            databaseContent={String(dbContent)} 
+          <Database
+            databaseContent={String(dbContent)}
             setDatabaseContent={setDbContent}
-            value2={isDatabaseOpened} 
-            setValue2={setIsDatabaseOpened} 
+            isDbOpened={isDatabaseOpened}
+            setIsDbOpened={setIsDatabaseOpened}
           />
         </>
       )}
