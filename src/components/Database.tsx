@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer, TextInput, PasswordInput } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeClosed } from "@tabler/icons-react"
 import { useState } from "react"
@@ -123,9 +123,36 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                             setDatabaseContent('')
                         }
                     }>Close database</Button>
-                    <Drawer opened={opened} onClose={close} title="Authentication">
+                    <Drawer
+                        opened={opened}
+                        onClose={close}
+                        title="Create new entry"
+                        position="right"
+                    >
                         {
-                            <h1>lalallalalalala</h1>
+                            <Box>
+                                <TextInput
+                                    label="Entry name"
+                                    placeholder="Name"
+                                />
+                                <TextInput
+                                    label="Username"
+                                    placeholder="Username"
+                                />
+                                <PasswordInput
+                                    label="Password"
+                                    placeholder="Password"
+                                    
+                                />
+                                <TextInput
+                                    label="URL"
+                                    placeholder="URL"
+                                />
+                                <TextInput
+                                    label="Notes"
+                                    placeholder="Notes"
+                                />
+                            </Box>
                         }
                     </Drawer>
 
