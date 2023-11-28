@@ -211,9 +211,6 @@ export default function Home() {
 
   return (
     <>
-      {String(isDatabaseOpened)}
-      {String('there should be nothing: ' + dbContent)} {/* TODO: delete this stuff */}
-
       <Space h={60} />
       {!isDatabaseOpened ? (
         <>

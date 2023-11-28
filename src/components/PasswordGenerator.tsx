@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api';
 import { useState } from 'react';
 import { generateDefault, generatePassphrase, generatePassword } from '../utils/passwordGeneration'
 import { randomId, useListState } from '@mantine/hooks';
+import { MAX_PASSPHRASE_LENGTH, MAX_PASSWORD_LENGTH, MIN_PASSPHRASE_LENGTH, MIN_PASSWORD_LENGTH, marksPassphrase, marksPassword } from '../utils/constants';
 
 export default function PasswordGenerator() {
     const [passwordLength, setPasswordLength] = useState(32);
@@ -33,20 +34,7 @@ export default function PasswordGenerator() {
         />
     ));
 
-    const marksPassword = [
-        { value: 16, label: '16' },
-        { value: 24, label: '24' },
-        { value: 32, label: '32' },
-        { value: 40, label: '40' },
-        { value: 48, label: '48' },
-    ];
-    const marksPassphrase = [
-        { value: 2, label: '2' },
-        { value: 4, label: '4' },
-        { value: 6, label: '6' },
-        { value: 8, label: '8' },
-        { value: 10, label: '10' },
-    ];
+    
     async function generatePasswordInterface(
         length: number,
         nums: boolean,
@@ -72,8 +60,8 @@ export default function PasswordGenerator() {
                     <Slider
                         w={400}
                         defaultValue={passphraseLength}
-                        min={2}
-                        max={10}
+                        min={MIN_PASSPHRASE_LENGTH}
+                        max={MAX_PASSPHRASE_LENGTH}
                         marks={marksPassphrase}
                         step={1}
                         onChange={setPassphraseLength}
@@ -99,8 +87,8 @@ export default function PasswordGenerator() {
                     <Slider
                         w={400}
                         defaultValue={passwordLength}
-                        min={16}
-                        max={48}
+                        min={MIN_PASSWORD_LENGTH}
+                        max={MAX_PASSWORD_LENGTH}
                         marks={marksPassword}
                         step={1}
                         onChange={setPasswordLength}
