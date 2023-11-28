@@ -4,7 +4,7 @@ import { IconEye, IconEyeClosed } from "@tabler/icons-react"
 import { useState } from "react"
 
 
-export default function Database({ databaseContent }: { databaseContent: string }) {
+export default function Database({ databaseContent, setDatabaseContent, value2, setValue2 }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, value2: boolean, setValue2: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(databaseContent)
 
     let name: string = parsedContent.name // database name from JSON
@@ -113,8 +113,17 @@ export default function Database({ databaseContent }: { databaseContent: string 
             <div>========================</div>
             <div>========================</div>
             <div>========================</div>*/}
+
             <ScrollArea w={550} h={400}>
+
                 <Box>
+                    <Button color='red' onClick={
+                        () => {
+                            setValue2(false)
+                            console.log('database closed.')
+                            setDatabaseContent('')
+                        }
+                    }>Close database</Button>
                     <Table highlightOnHover>
                         <thead>
                             <tr>

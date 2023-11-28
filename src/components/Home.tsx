@@ -1,7 +1,7 @@
 import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
-import { useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
@@ -14,6 +14,10 @@ import { BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import Database from "./Database";
 
 
+type Props = {
+  isActive: boolean;
+  setIsActive: (active: boolean) => void;
+}
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
@@ -205,9 +209,14 @@ export default function Home() {
     availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
 
+  const [value1, setValue1] = useState(true);
+
   return (
     <>
-      <Space h={60}/>
+    {String(isDatabaseOpened)}
+    {String('there should be nothing: ' + dbContent)} {/* TODO: delete this stuff */}
+
+      <Space h={60} />
       {!isDatabaseOpened ? (
         <>
           <Modal opened={opened} onClose={close} title="Create new password database" size="md">
@@ -252,14 +261,12 @@ export default function Home() {
         </>
       ) : (
         <>
-          <Button color='red' onClick={
-            () => {
-              setIsDatabaseOpened(false)
-              console.log('database closed.')
-              setDbContent('')
-            }
-          }>Close database</Button>
-          <Database databaseContent={String(dbContent)} />
+          <Database 
+            databaseContent={String(dbContent)} 
+            setDatabaseContent={setDbContent}
+            value2={isDatabaseOpened} 
+            setValue2={setIsDatabaseOpened} 
+          />
         </>
       )}
     </>
