@@ -1,50 +1,45 @@
 import { useState } from 'react';
-import { Navbar } from '@mantine/core';
 import {
-  IconBellRinging,
-  IconFingerprint,
-  IconSettings,
-  IconDatabaseImport,
+    IconBellRinging,
+    IconFingerprint,
+    IconSettings,
+    IconDatabaseImport,
+    IconGauge,
 } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-import { useStyles } from '../utils/styles';
 import { randomId } from '@mantine/hooks';
+import { Anchor, Box, NavLink } from '@mantine/core';
 
 const data = [
-  { link: '/', label: 'Passwords', icon: IconBellRinging, key: randomId() },
-  { link: '/security', label: 'Security', icon: IconFingerprint, key: randomId() },
-  // { link: '/databases', label: 'Databases', icon: IconDatabaseImport, key: randomId() },
-  { link: '/settings', label: 'Settings', icon: IconSettings, key: randomId() },
-  { link: '/tests', label: 'Tests', icon: IconSettings, key: randomId() },
-  { link: '/passwordgenerator', label: 'Password Generator', icon: IconSettings, key: randomId() },
+    { link: '/', label: 'Passwords', icon: <IconBellRinging size="1rem" stroke={1.5} />, key: randomId() },
+    { link: '/security', label: 'Security', icon: <IconFingerprint size="1rem" stroke={1.5} />, key: randomId() },
+    // { link: '/databases', label: 'Databases', icon: IconDatabaseImport, key: randomId() },
+    { link: '/settings', label: 'Settings', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
+    { link: '/tests', label: 'Tests', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
+    { link: '/passwordgenerator', label: 'Password Generator', icon: <IconBellRinging size="1rem" stroke={1.5} />, key: randomId() },
 ];
 
-export function NavbarSimple({ isOpened }: { isOpened: any }) {
-  const { classes, cx } = useStyles();
-  let highlighted: string = data[0].label // set highlited to the home page so it is highlited on startup
-  const [active, setActive] = useState(highlighted);
+export function NavbarSimple() {
+    let highlighted: string = data[0].label // set highlited to the home page so it is highlited on startup
+    const [active, setActive] = useState(0);
 
-  const links = data.map((item) => (
-    <Link
-      className={cx(classes.link, { [classes.linkActive]: item.label === active })}
-      to={item.link}
-      key={item.label}
-      onClick={() => {
-        highlighted = item.label
-        setActive(highlighted)
-      }
-      }
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </Link>
-  ));
+    const items = data.map((item, index) => (
+        <NavLink
+            component={Link}
+            to={item.link}
+            key={item.label}
+            active={index === active}
+            label={item.label}
+            leftSection={item.icon}
+            onClick={() => setActive(index)}
+            color="indigo"
+            variant="filled"
+        />
+    ));
 
-  return (
-    <Navbar height='100%' width={{ sm: 200 }} p='xs' hidden={!isOpened} hiddenBreakpoint='sm' className={classes.wholeNavbar}>
-      <Navbar.Section>
-        {links}
-      </Navbar.Section>
-    </Navbar>
-  );
+    return (
+        <Box mih={220}>
+            {items}
+        </Box>
+    );
 }

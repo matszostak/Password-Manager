@@ -100,7 +100,7 @@ export default function Home() {
                 openpass = e.target.value
               }}
             />
-            <Group position="right" mt="md">
+            <Group mt="md">
               <Button onClick={async () => {
                 modals.closeAll()
                 let check: string = String(await openExistingDatabase(openpass, String(selected)))
@@ -152,7 +152,7 @@ export default function Home() {
               openpass = e.target.value
             }}
           />
-          <Group position="right" mt="md">
+          <Group mt="md">
             <Button onClick={async () => {
               console.log('asdadadsadsadasdas')
               modals.closeAll()
@@ -233,7 +233,7 @@ export default function Home() {
                   {...form.getInputProps('confirmPassword')}
                 />
 
-                <Group position="right" mt="md">
+                <Group mt="md">
                   <Button type="submit" onClick={() => {
                     setPassword(String(form.values.confirmPassword))
                     console.log('test' + password)

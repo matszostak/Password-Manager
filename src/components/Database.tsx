@@ -142,7 +142,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                                 <PasswordInput
                                     label="Password"
                                     placeholder="Password"
-                                    
+
                                 />
                                 <TextInput
                                     label="URL"
