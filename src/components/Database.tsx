@@ -1,7 +1,8 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer, TextInput, PasswordInput } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer, TextInput, PasswordInput, ActionIcon } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconEye, IconEyeClosed } from "@tabler/icons-react"
+import { IconEye, IconEyeClosed, IconEyeOff, IconRefresh } from "@tabler/icons-react"
 import { useState } from "react"
+import { generatePassphrase } from "../utils/passwordGeneration"
 
 
 export default function Database({ databaseContent, setDatabaseContent, isDbOpened, setIsDbOpened }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, isDbOpened: boolean, setIsDbOpened: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -12,6 +13,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
     let dbVault = parsedContent.vault // database vault
 
     const [opened, { open, close }] = useDisclosure(false);
+    const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
 
     function ExpandEntry(entry: any) {
         const [opened, { toggle }] = useDisclosure(false);
@@ -93,6 +95,13 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                 </tr>
             </>
     )
+
+    async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
+        let x: any = await generatePassphrase(length, numbers, specialCharacter)
+        setGeneratedPassword(String(x))
+    }
+
+    const [visible, { toggle }] = useDisclosure(false);
     return (
         <>
             {/*<div>Name: {name}</div>
@@ -142,8 +151,33 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                                 <PasswordInput
                                     label="Password"
                                     placeholder="Password"
-
+                                    rightSection={
+                                        <Group grow wrap="nowrap" gap={6} ml={-40}>
+                                            <ActionIcon 
+                                                variant="subtle"
+                                                color="indigo"
+                                                onClick={() => generatePassphraseInterface(4, true, '_')}
+                                            >
+                                                <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                            </ActionIcon>
+                                            <ActionIcon 
+                                                color="indigo"
+                                                onClick={toggle}
+                                                variant="subtle"
+                                            >
+                                            {visible ? (
+                                                <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                ) : (
+                                                <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                )}
+                                            </ActionIcon>
+                                        </Group>
+                                    }
+                                    value={String(generatedPassword)}
+                                    onChange={(e) => setGeneratedPassword(e.target.value)}
+                                    visible={visible}
                                 />
+                                
                                 <TextInput
                                     label="URL"
                                     placeholder="URL"
