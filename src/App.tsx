@@ -13,6 +13,7 @@ import {
     useMantineColorScheme,
     useComputedColorScheme,
     Space,
+    Title,
 } from '@mantine/core';
 
 /* App Imports */
@@ -62,7 +63,7 @@ export default function App() {
     }
 
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true); // just marking this thing because it might be useful in some cases (toggle:)
 
     useEffect(() => {
         console.log('Loading app...')
@@ -83,14 +84,16 @@ export default function App() {
         >
             <AppShell.Header>
                 <Group h="100%" px="md" justify='space-between'>
-                    <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
-                    <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
-                    <Space w={400} />
+                    <Group>
+                        <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+                        <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+                        <Title order={1}>Password Manager</Title>
+                    </Group>
+                    
                     <ActionIcon
                         onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
                         variant="default"
                         aria-label="Toggle color scheme"
-
                     >
                         {computedColorScheme === 'dark' ? (
                             <IconSun stroke={1.5} />

@@ -65,35 +65,19 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
     const [isVisible, setVisible] = useState(false);
     const map_password = dbVault.map(
         (entry: any) =>
-            <>
+            <Table.Tr key={entry.id}>
                 {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
-
-                <tr key={entry.id} onClick={() => {
-                    setRowClicked(!rowClicked)
-                    console.log(rowClicked)
-                }}>
-                    <td>{entry.username}</td>
-                    <td>
-                        <span onClick={() => setVisible(!isVisible)}>
-                            {isVisible ?
-                                <div>{entry.password}</div>
-                                :
-                                <div>************</div>
-                            }
-                        </span>
-                    </td>
-                    <td>
-                        <span onClick={() => setVisible(!isVisible)}>
-                            {isVisible ?
-                                <IconEyeClosed />
-                                :
-                                <IconEye />
-                            }
-                        </span>
-                    </td>
-                    <td>{entry.urls}</td>
-                </tr>
-            </>
+                <Table.Td>{entry.username}</Table.Td>
+                <Table.Td>
+                    <PasswordInput
+                        variant="unstyled"
+                        value={entry.password}
+                        w={160}
+                        pointer
+                    />
+                </Table.Td>
+                <Table.Td>{entry.urls}</Table.Td>
+            </Table.Tr>
     )
 
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
@@ -122,8 +106,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
             <div>========================</div>
             <div>========================</div>*/}
 
-            <ScrollArea w={550} h={400}>
-
+            <ScrollArea>
                 <Box>
                     <Button color='red' onClick={
                         () => {
@@ -153,22 +136,22 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                                     placeholder="Password"
                                     rightSection={
                                         <Group grow wrap="nowrap" gap={6} ml={-40}>
-                                            <ActionIcon 
+                                            <ActionIcon
                                                 variant="subtle"
                                                 color="indigo"
                                                 onClick={() => generatePassphraseInterface(4, true, '_')}
                                             >
                                                 <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
                                             </ActionIcon>
-                                            <ActionIcon 
+                                            <ActionIcon
                                                 color="indigo"
                                                 onClick={toggle}
                                                 variant="subtle"
                                             >
-                                            {visible ? (
-                                                <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                {visible ? (
+                                                    <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
                                                 ) : (
-                                                <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                    <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
                                                 )}
                                             </ActionIcon>
                                         </Group>
@@ -177,7 +160,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                                     onChange={(e) => setGeneratedPassword(e.target.value)}
                                     visible={visible}
                                 />
-                                
+
                                 <TextInput
                                     label="URL"
                                     placeholder="URL"
@@ -192,15 +175,14 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
 
                     <Button onClick={open}>Open Drawer</Button>
                     <Table highlightOnHover>
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Password</th>
-                                <th>    </th> {/* empty column for the icon */}
-                                <th>More</th>
-                            </tr>
-                        </thead>
-                        <tbody>{map_password}</tbody>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>Username</Table.Th>
+                                <Table.Th>Password</Table.Th>
+                                <Table.Th>More</Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>{map_password}</Table.Tbody>
                     </Table>
                 </Box>
             </ScrollArea>
