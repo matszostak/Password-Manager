@@ -1,0 +1,11 @@
+{
+    "settings": {
+        "theme": "light"
+    },
+    "databases": [
+        {
+            "filename": "example",
+            "path": "examplepath"
+        }
+    ]
+}

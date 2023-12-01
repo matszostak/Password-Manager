@@ -2,7 +2,7 @@
 import { Route, Routes } from 'react-router-dom'
 import { useEffect } from 'react';
 /* Tauri Imports */
-import { exists, writeFile, createDir } from '@tauri-apps/api/fs'
+import { exists, createDir, copyFile, writeTextFile, readTextFile } from '@tauri-apps/api/fs'
 
 /* Mantine Imports */
 import {
@@ -26,49 +26,11 @@ import Tests from './components/Tests';
 import PasswordGenerator from './components/PasswordGenerator';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMoon, IconSun } from '@tabler/icons-react';
+import { invoke } from '@tauri-apps/api';
 
 export default function App() {
-    // TODO: I can start using a default color scheme loaded from the AppData file
-    const createDataFolder = async () => { // TODO: that folder might no longer be necessary
-        console.log('createDataFolder')
-        await createDir("data", {
-            dir: Constants.folderPath,
-            recursive: true,
-        });
-        createDataFile();
-    };
-
-    const createDataFile = async () => {
-        console.log('createDataFile')
-        try {
-            await writeFile(
-                {
-                    contents: "[\"colorScheme\": \"dark\"]",
-                    path: Constants.profileFile,
-                },
-                { dir: Constants.folderPath }
-            );
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    const checkFiles = async () => { // TODO: check all files
-        let optionsFolderExists = await exists(Constants.profileFile, { dir: Constants.folderPath })
-        console.log('checking files')
-        console.log(optionsFolderExists)
-        if (!optionsFolderExists) {
-            createDataFolder();
-        }
-    }
-
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true); // just marking this thing because it might be useful in some cases (toggle:)
-
-    useEffect(() => {
-        console.log('Loading app...')
-        checkFiles()
-    }, []);
 
     const { setColorScheme } = useMantineColorScheme();
     const computedColorScheme = useComputedColorScheme('light')
