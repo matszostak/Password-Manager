@@ -32,10 +32,13 @@ export default function Home() {
     const handleRead = async () => {
       const f: string = Constants.profileFile
       const contents: string = await (readTextFile(f, { dir: BaseDirectory.AppData }))
-      console.log(contents)
-      //for (const p of JSON.parse(contents).savedPaths) {
-      //  paths.push(p) // TODO: push only if element does not exist in array
-      //}
+      const databases = JSON.parse(contents).databases
+      console.log(databases[0].path)
+      for (const p of databases) {
+        if (p.path !== "") {
+          paths.push(p.path) // TODO: push only if element does not exist in array
+        }
+      }
     }
     handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
   })

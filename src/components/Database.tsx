@@ -1,23 +1,22 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, SimpleGrid, Grid, Drawer, TextInput, PasswordInput, ActionIcon } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconEye, IconEyeClosed, IconEyeOff, IconRefresh } from "@tabler/icons-react"
+import { IconEye, IconEyeOff, IconRefresh } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 
 
 export default function Database({ databaseContent, setDatabaseContent, isDbOpened, setIsDbOpened }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, isDbOpened: boolean, setIsDbOpened: React.Dispatch<React.SetStateAction<boolean>> }) {
-    let parsedContent = JSON.parse(databaseContent)
+    console.log('AAAAAAAAAAAAAAAAAAAAAA' + localStorage.getItem('dbcontent'))
+    let parsedContent = JSON.parse(String(localStorage.getItem('dbcontent')))
 
     let name: string = parsedContent.name // database name from JSON
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
-
     const [opened, { open, close }] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
 
     function ExpandEntry(entry: any) {
         const [opened, { toggle }] = useDisclosure(false);
-
         return (
             <Box maw={400} mx="auto">
                 <Group mb={5}>
@@ -62,7 +61,6 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
             </>
     )
 
-    const [isVisible, setVisible] = useState(false);
     const map_password = dbVault.map(
         (entry: any) =>
             <Table.Tr key={entry.id}>
@@ -108,6 +106,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
 
             <ScrollArea>
                 <Box>
+                    <Text>{name}</Text>
                     <Button color='red' onClick={
                         () => {
                             setIsDbOpened(false)
@@ -165,9 +164,12 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                                     label="URL"
                                     placeholder="URL"
                                 />
-                                <TextInput
+                                <Textarea
                                     label="Notes"
                                     placeholder="Notes"
+                                    autosize
+                                    minRows={4}
+                                    maxRows={8}
                                 />
                             </Box>
                         }

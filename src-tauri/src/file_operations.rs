@@ -103,14 +103,13 @@ pub fn create_useful_files() {
     let combined_string = format!("{}{}", appdata_dir, "\\PasswordManager");
     println!("{}", combined_string);
     if !Path::new(combined_string.as_str()).exists() {
-        println!("does not exist");
+        println!("PasswordManager directory does not exist... creating");
         let _ = fs::create_dir(combined_string);
     }
     let combined_string2 = format!("{}{}", appdata_dir, "\\PasswordManager");
     let file = format!("{}{}", combined_string2, "\\profile.json");
     if !Path::new(file.as_str()).exists() {
-        println!("does not exist");
+        println!("Config file does not exist... creating");
         let _ = fs::copy("src\\res\\profile.json", file);
-    } 
-
+    }
 }

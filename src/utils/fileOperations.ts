@@ -3,13 +3,12 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { fileExtensionWithDot, fileExtensionWithoutDot } from './constants';
 
 export async function saveNewDatabase(password: string) {
-    console.log(password)
     const filePath = await save({
         filters: [{
             name: fileExtensionWithDot,
             extensions: [fileExtensionWithoutDot],
         }]
-    });
+    })
     console.log(filePath)
     if (filePath) {
         await invoke("create_new_database", { path: filePath, password: password })
@@ -34,4 +33,8 @@ export async function openExistingDatabase(password: string, selected: string) {
         console.log(database_content)
         return database_content
     }
+}
+
+export async function saveDbInfoToFile(path: string) {
+    
 }

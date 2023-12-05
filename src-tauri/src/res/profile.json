@@ -4,8 +4,8 @@
     },
     "databases": [
         {
-            "filename": "example",
-            "path": "examplepath"
+            "filename": "",
+            "path": ""
         }
     ]
 }
