@@ -3,12 +3,11 @@ import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeOff, IconRefresh } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
+import { Link } from "react-router-dom"
 
 
-export default function Database({ databaseContent, setDatabaseContent, isDbOpened, setIsDbOpened }: { databaseContent: string, setDatabaseContent: React.Dispatch<React.SetStateAction<string>>, isDbOpened: boolean, setIsDbOpened: React.Dispatch<React.SetStateAction<boolean>> }) {
-    console.log('AAAAAAAAAAAAAAAAAAAAAA' + localStorage.getItem('dbcontent'))
+export default function Database({ parentState, setParentState } : { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(String(localStorage.getItem('dbcontent')))
-
     let name: string = parsedContent.name // database name from JSON
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
@@ -70,6 +69,7 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
                     <PasswordInput
                         variant="unstyled"
                         value={entry.password}
+                        onChange={() => { }} // onChange to supress a warning
                         w={160}
                         pointer
                     />
@@ -107,13 +107,18 @@ export default function Database({ databaseContent, setDatabaseContent, isDbOpen
             <ScrollArea>
                 <Box>
                     <Text>{name}</Text>
-                    <Button color='red' onClick={
-                        () => {
-                            setIsDbOpened(false)
-                            console.log('database closed.')
-                            setDatabaseContent('')
+                    <Button 
+                        color='red' 
+                        onClick={
+                            () => {
+                                localStorage.setItem('isDbOpened', 'false')
+                                localStorage.setItem('dbContent', '')
+                                setParentState(!parentState);
+                            }
                         }
-                    }>Close database</Button>
+                        component={Link}
+                        to='/'
+                    >Close database</Button>
                     <Drawer
                         opened={opened}
                         onClose={close}

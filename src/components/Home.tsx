@@ -1,7 +1,7 @@
 import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
-import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
+import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
@@ -13,19 +13,17 @@ import * as Constants from '../utils/constants'
 import { BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import Database from "./Database";
 
-
-type Props = {
-  isActive: boolean;
-  setIsActive: (active: boolean) => void;
-}
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
-  const [dbContent, setDbContent] = useState('')
+  // TODO: Save it to lacalStorage or something to get persistence
+  //const [dbContent, setDbContent] = useState('')
   const [_refreshKey, setRefreshKey] = useState(0);
+
+  const [parentState, setParentState] = useState(false);
 
   // TODO: save created paths or opened paths to file
   useState(() => {
@@ -42,8 +40,6 @@ export default function Home() {
     }
     handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
   })
-
-  const [isDatabaseOpened, setIsDatabaseOpened] = useState(false)
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
@@ -116,8 +112,9 @@ export default function Home() {
                     autoClose: 3600,
                   })
                 } else {
-                  setIsDatabaseOpened(true)
-                  setDbContent(check)
+                  localStorage.setItem('isDbOpened', 'true')
+                  localStorage.setItem('dbContent', check)
+                  setRefreshKey(oldKey => oldKey + 1)
                   return check
                 }
                 paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : console.log("This item already exists");
@@ -169,8 +166,8 @@ export default function Home() {
                   autoClose: 3600,
                 })
               } else {
-                setIsDatabaseOpened(true)
-                setDbContent(check)
+                localStorage.setItem('isDbOpened', 'true')
+                localStorage.setItem('dbContent', check)
                 return check
               }
             }}>
@@ -215,13 +212,14 @@ export default function Home() {
   return (
     <>
       <Space h={60} />
-      {!isDatabaseOpened ? (
+      {(localStorage.getItem('isDbOpened') === 'false') ? (
         <>
           <Modal opened={opened} onClose={close} title="Create new password database" size="md">
             <Box maw={340} mx="auto">
               <form onSubmit={form.onSubmit(() => {
                 createDatabase()
                 close()
+                setRefreshKey(oldKey => oldKey + 1)
               })}>
                 <PasswordInput
                   label="Password"
@@ -259,12 +257,8 @@ export default function Home() {
         </>
       ) : (
         <>
-          <Database
-            databaseContent={String(dbContent)}
-            setDatabaseContent={setDbContent}
-            isDbOpened={isDatabaseOpened}
-            setIsDbOpened={setIsDatabaseOpened}
-          />
+          
+          <Database parentState={parentState} setParentState={setParentState} />
         </>
       )}
     </>
