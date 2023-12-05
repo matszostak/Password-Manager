@@ -3,8 +3,6 @@ import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeOff, IconRefresh } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
-import { Link } from "react-router-dom"
-
 
 export default function Database({ parentState, setParentState } : { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(String(localStorage.getItem('dbcontent')))
@@ -116,8 +114,6 @@ export default function Database({ parentState, setParentState } : { parentState
                                 setParentState(!parentState);
                             }
                         }
-                        component={Link}
-                        to='/'
                     >Close database</Button>
                     <Drawer
                         opened={opened}
