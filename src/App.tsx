@@ -12,7 +12,6 @@ import {
     Burger,
     useMantineColorScheme,
     useComputedColorScheme,
-    Space,
     Title,
 } from '@mantine/core';
 
@@ -21,12 +20,10 @@ import Home from './components/Home';
 import { NavbarSimple } from './components/Navbar';
 import Security from './components/Security';
 import Settings from './components/Settings';
-import * as Constants from './utils/constants'
 import Tests from './components/Tests';
 import PasswordGenerator from './components/PasswordGenerator';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMoon, IconSun } from '@tabler/icons-react';
-import { invoke } from '@tauri-apps/api';
 
 export default function App() {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();

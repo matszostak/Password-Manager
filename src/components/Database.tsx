@@ -5,7 +5,7 @@ import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 
 export default function Database({ parentState, setParentState } : { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
-    let parsedContent = JSON.parse(String(localStorage.getItem('dbcontent')))
+    let parsedContent = JSON.parse(String(localStorage.getItem('dbContent')))
     let name: string = parsedContent.name // database name from JSON
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
