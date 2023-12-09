@@ -36,7 +36,7 @@ export default function App() {
     const computedColorScheme = useComputedColorScheme('light')
 
     appWindow.onCloseRequested(async () => {
-      console.log('close requested')
+      console.log('close requested') //TODO: save the database when the user closes the app
       localStorage.setItem('isDbOpened', 'false')
       localStorage.setItem('dbContent', '')
       await invoke('test')
