@@ -23,6 +23,9 @@
       "dialog": {
         "save": true,
         "open": true
+      },
+      "window":{
+        "close": true
       }
     },
     "bundle": {

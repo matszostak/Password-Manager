@@ -10,6 +10,10 @@ mod password_generator;
 #[macro_use]
 extern crate lazy_static;
 
+#[tauri::command]
+fn test() {
+    println!("CLOSED NOw");
+}
 fn main() {
     file_operations::create_useful_files();
     tauri::Builder::default()
@@ -19,7 +23,8 @@ fn main() {
             file_operations::encrypt_database,
             password_generator::generate_password,
             password_generator::generate_passphrase,
-            password_generator::generate_default_options
+            password_generator::generate_default_options,
+            test
             ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

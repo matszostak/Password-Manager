@@ -25,12 +25,23 @@ import PasswordGenerator from './components/PasswordGenerator';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMoon, IconSun } from '@tabler/icons-react';
 
+import { appWindow, WebviewWindow } from '@tauri-apps/api/window'
+import { invoke } from '@tauri-apps/api';
+
 export default function App() {
     const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
     const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true); // just marking this thing because it might be useful in some cases (toggle:)
 
     const { setColorScheme } = useMantineColorScheme();
     const computedColorScheme = useComputedColorScheme('light')
+
+    appWindow.onCloseRequested(async () => {
+      console.log('close requested')
+      localStorage.setItem('isDbOpened', 'false')
+      localStorage.setItem('dbContent', '')
+      await invoke('test')
+    });
+
     return (
         <AppShell
             header={{ height: 60 }}
