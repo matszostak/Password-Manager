@@ -45,7 +45,7 @@ export default function PasswordGenerator() {
         similar: boolean,
         strict: boolean
     ) {
-        console.log(checker(values)) // TODO: handle error when the user unchecks every box
+        // TODO: handle error when the user unchecks every box
         let x: any = await generatePassword(length, nums, lower, upper, symbols, spaces, similar, strict)
         setGeneratedPassword(String(x))
     }

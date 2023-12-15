@@ -12,7 +12,7 @@ extern crate lazy_static;
 
 #[tauri::command]
 fn test() {
-    println!("CLOSED NOw");
+    println!("CLOSED NOW");
 }
 fn main() {
     file_operations::create_useful_files();

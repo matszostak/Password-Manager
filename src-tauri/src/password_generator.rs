@@ -27,13 +27,11 @@ pub fn generate_password(
     };
     let generated: Result<String, &str> = pg.generate_one();
     // TODO: check strength here
-    println!("{}", generated.clone().unwrap().to_string());
     return generated.unwrap().to_string();
 }
 
 #[tauri::command]
 pub fn generate_default_options() -> String {
-    println!("generating");
     let pg = PasswordGenerator {
         length: 32,
         numbers: true,
@@ -45,7 +43,6 @@ pub fn generate_default_options() -> String {
         strict: true, // leave it to true
     };
     let generated: Result<String, &str> = pg.generate_one();
-    println!("{}", generated.clone().unwrap().to_string());
     // TODO: check strength here
     return generated.unwrap().to_string();
 }
@@ -72,7 +69,7 @@ fn load_database() -> HashMap<i32, String> {
 // TODO: this code is absolutely disgusting.
 #[tauri::command]
 pub fn generate_passphrase(passphrase_length: u32, passphrase_numbers: bool, passphrase_special_char_type: String) -> String {
-    let before = Instant::now();
+    let _before = Instant::now();
     let mut password = "".to_string();
 
     for _i in 0..passphrase_length {
@@ -92,9 +89,6 @@ pub fn generate_passphrase(passphrase_length: u32, passphrase_numbers: bool, pas
     let mut tmp_password = password.chars(); // this here cleans up the password
     tmp_password.next();
     password = tmp_password.as_str().to_string();
-
-    println!("Pass: {}", password);
-    println!("Elapsed time: {:.2?}", before.elapsed());
     return password;
 }
 

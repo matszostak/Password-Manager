@@ -13,12 +13,6 @@ pub fn argon2_hash<'a>(password: &'a [u8], salt: &'a SaltString) -> PasswordHash
     );
 
     let password_hash = argon2.hash_password(password, salt).unwrap();
-    println!("Whole hash: {}", password_hash);
-    println!("Algorithm: {}", password_hash.algorithm.to_string());
-    println!("Hash: {}", password_hash.hash.unwrap().to_string());
-    println!("Salt: {}", password_hash.salt.unwrap().to_string());
-    println!("Version: {}", password_hash.version.unwrap().to_string());
-    println!("Params: {}", password_hash.params);
     
     return password_hash;
 }

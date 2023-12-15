@@ -12,56 +12,9 @@ export default function Database({ parentState, setParentState } : { parentState
     const [opened, { open, close }] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
 
-    function ExpandEntry(entry: any) {
-        const [opened, { toggle }] = useDisclosure(false);
-        return (
-            <Box maw={400} mx="auto">
-                <Group mb={5}>
-                    <Button onClick={toggle}>Toggle with linear transition</Button>
-                </Group>
-
-                <Collapse in={opened}>
-                    <div>{entry.id + '|' + entry.username + '|' + entry.password + '|' + entry.urls + '|' + entry.notes + '|' + entry.metadata.created}</div>
-                </Collapse>
-            </Box>
-        );
-    }
-
-    const [rowClicked, setRowClicked] = useState(true)
-    const map_password_old = dbVault.map(
-        (entry: any) =>
-            <>
-                {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
-
-                {rowClicked ? (
-                    <tr key={entry.id} onClick={() => {
-                        setRowClicked(!rowClicked)
-                        console.log(rowClicked)
-                    }}>
-                        <td>{entry.username}</td>
-                        <td>{entry.urls}</td>
-                        <td>{entry.password}</td>
-                    </tr>
-                ) : (
-                    <tr key={entry.id} onClick={() => {
-                        setRowClicked(!rowClicked)
-                        console.log(rowClicked)
-                    }}>
-                        <td>{entry.username}</td>
-                        <td>{entry.urls}</td>
-                        <td>
-                            <Button h={30}>Copy password</Button>
-                        </td>
-
-                    </tr>
-                )}
-            </>
-    )
-
     const map_password = dbVault.map(
         (entry: any) =>
             <Table.Tr key={entry.id}>
-                {/*<div>{entry.username}{entry.password}{ExpandEntry(entry)}</div>*/}
                 <Table.Td>{entry.username}</Table.Td>
                 <Table.Td>
                     <PasswordInput
@@ -84,24 +37,6 @@ export default function Database({ parentState, setParentState } : { parentState
     const [visible, { toggle }] = useDisclosure(false);
     return (
         <>
-            {/*<div>Name: {name}</div>
-            <div>Creation date: {creationDate}</div>
-            <div>========================</div>
-            <div>vault:</div>
-            <div>Vault item ID: {dbVault[0].id}</div>
-            <div>Username: {dbVault[0].username}</div>
-            <div>Password: {dbVault[0].password}</div>
-            <div>URLs: {dbVault[0].urls}</div>
-            <div>Notes: {dbVault[0].notes}</div>
-            <div>========================</div>
-            <div>metadata:</div>
-            <div>Created: {dbVault[0].metadata.created}</div>
-            <div>Last modified: {dbVault[0].metadata.lastmodified}</div>
-            <div>Times modified: {dbVault[0].metadata.timesmodified}</div>
-            <div>========================</div>
-            <div>========================</div>
-            <div>========================</div>*/}
-
             <ScrollArea>
                 <Box>
                     <Text>{name}</Text>
@@ -194,24 +129,3 @@ export default function Database({ parentState, setParentState } : { parentState
         // TODO: handle change and saving the database here
     );
 }
-
-/*
-{
-    "name": "",
-    "creationdate": "",
-    "vault": [
-        {
-            "id": "",
-            "username": "",
-            "password": "",
-            "urls": [],
-            "notes": "",
-            "metadata": {
-                "created": "",
-                "lastmodified": "",
-                "timesmodified": 0
-            }
-        }
-    ]
-}
-*/

@@ -31,7 +31,6 @@ export default function Home() {
       const f: string = Constants.profileFile
       const contents: string = await (readTextFile(f, { dir: BaseDirectory.AppData }))
       const databases = JSON.parse(contents).databases
-      console.log(databases[0].path)
       for (const p of databases) {
         if (p.path !== "") {
           paths.push(p.path) // TODO: push only if element does not exist in array
@@ -43,9 +42,7 @@ export default function Home() {
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
-    console.log('this notification 0')
     if (pathOfNewDB) {
-      console.log('this notification 1')
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
       // setIsDatabaseOpened(true) <- maybe TODO - right now the database is immediately encrypted on create so it cannot return a nice JSON, but it works pretty well now
@@ -58,7 +55,6 @@ export default function Home() {
         autoClose: 3600,
       })
     } else {
-      console.log('this notification 2')
       notifications.show({
         message: 'Please create a database file.',
         title: 'Database file not created!',
@@ -86,7 +82,6 @@ export default function Home() {
         extensions: [fileExtensionWithoutDot]
       }]
     });
-    console.log('selected:', selected)
     if (selected) {
       modals.open({
         title: 'Open database',
@@ -154,7 +149,6 @@ export default function Home() {
           />
           <Group mt="md">
             <Button onClick={async () => {
-              console.log('asdadadsadsadasdas')
               modals.closeAll()
               let check: string = String(await openExistingDatabase(openpass, String(exactPath)))
               if (check === "Database does not exist." || check === "Wrong password!") {
@@ -237,7 +231,6 @@ export default function Home() {
                 <Group mt="md">
                   <Button type="submit" onClick={() => {
                     setPassword(String(form.values.confirmPassword))
-                    console.log('test' + password)
                   }}>
                     Submit
                   </Button>

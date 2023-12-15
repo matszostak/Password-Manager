@@ -15,9 +15,7 @@ export default function Tests() {
   const [value, setValue] = useState(fileContent);
 
   const handleWriteClick = async () => {
-
     console.log('old stuff')
-
     //await (message('File saved.'))
   }
 
@@ -48,14 +46,11 @@ export default function Tests() {
       }]
     });
     await invoke('decrypt_database', { path: selected, password: "aaaa" }).then(msg => {
-      console.log(JSON.parse(String(msg)))
-      console.log(typeof (JSON.parse(String(msg))))
       setValue(JSON.parse(String(msg)))
     })
   }
   async function genPassphrase(length: number, include_numbers: boolean, specialCharType: string) {
     let generatedPassphrase = await invoke('generate_passphrase', {length: length, numbers: include_numbers, specialCharType: specialCharType})
-    console.log(generatedPassphrase)
   }
   return (
     <>

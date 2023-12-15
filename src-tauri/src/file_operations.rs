@@ -14,12 +14,8 @@ pub fn create_new_database(path: String, password: String) {
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap(); 
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt); 
-    println!("{:?}", salt);
 
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
-
-    println!("Key: {}", hex::encode(key));
-    println!("PASSWORD: {}", password);
 
     // TODO: encrypt file with password and basically handle key creation
     let template_path = Path::new("src\\res\\db_template.json");
@@ -29,16 +25,9 @@ pub fn create_new_database(path: String, password: String) {
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
         let iv: [u8; 16] = [0; 16];
         let mut salt_and_iv: Vec<u8> = [&salt[..], &iv].concat();
-        println!("Salt: {}", hex::encode(salt));
-        println!("IV: {}", hex::encode(iv));
         // TODO: save salt, IV and all the important stuff to file
         let mut encrypted: Vec<u8> = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
-        println!("{}", hex::encode(&encrypted));
-
         salt_and_iv.append(&mut encrypted);
-
-        println!("{}", hex::encode(&salt_and_iv));
-
         fs::write(&path, &salt_and_iv).unwrap();
     } else {
         println!("Something went wrong.");
@@ -58,24 +47,11 @@ pub fn decrypt_database(path: String, password: String) -> String {
 
     let key = generate_key_from_password_argon2(password.as_bytes(), salt);
 
-    println!("\n\n\n");
-    println!("SALT: {}", hex::encode(&salt));
-    println!("IV: {}", hex::encode(&iv));
-    println!("DATA: {}", hex::encode(&data));
-    println!("PASSWORD: {}", password);
-    println!("KEY: {}", hex::encode(&key));
-    println!("\n\n\n");
-
     let decrypted_result = decrypt(data, &key, iv);
     if decrypted_result.is_ok() {
         let decrypted = decrypted_result.ok().unwrap();
         let decrypted_string = str::from_utf8(&decrypted).unwrap();
-        println!("Decrypted response: {:?}", decrypted_string);
-        let res: serde_json::Value =
-            serde_json::from_str(&decrypted_string).expect("Unable to parse");
-        let pretty: String = serde_json::to_string_pretty(&res).unwrap();
-        print!("{}", pretty);
-        return pretty;
+        return decrypted_string.to_string();
     } else {
         let err_string = "{}";
         return serde_json::to_string_pretty(&err_string).unwrap();
@@ -85,23 +61,18 @@ pub fn decrypt_database(path: String, password: String) -> String {
 #[tauri::command]
 pub fn encrypt_database(
     path: String,
-    password: String, /* password will be stored somewhere when DB is successfully decrypted */
+    _password: String, /* password will be stored somewhere when DB is successfully decrypted */
 ) {
     // TODO: finish encryption
     let old_file_contents = fs::read(path).unwrap();
-    let salt = &old_file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
-    let iv = &old_file_contents[16..32]; // TODO: change IV?
-    let data = &old_file_contents[32..];
-    println!("SALT: {}", hex::encode(&salt));
-    println!("IV: {}", hex::encode(&iv));
-    println!("DATA: {}", hex::encode(&data));
-    println!("PASSWORD: {}", password);
+    let _salt = &old_file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
+    let _iv = &old_file_contents[16..32]; // TODO: change IV?
+    let _data = &old_file_contents[32..];
 }
 
 pub fn create_useful_files() {
     let appdata_dir = tauri::api::path::data_dir().unwrap().display().to_string();
     let combined_string = format!("{}{}", appdata_dir, "\\PasswordManager");
-    println!("{}", combined_string);
     if !Path::new(combined_string.as_str()).exists() {
         println!("PasswordManager directory does not exist... creating");
         let _ = fs::create_dir(combined_string);

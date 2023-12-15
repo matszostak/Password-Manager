@@ -2,7 +2,6 @@ import { invoke } from '@tauri-apps/api';
 
 export async function generateDefault() {
     let generated = await invoke('generate_default_options', {})
-    console.log(generated)
     return String(generated)
 }
 
@@ -26,7 +25,6 @@ export async function generatePassword(
         passwordSimilar: similar,
         passwordStrict: true, // TODO: leave it to true for now
     })
-    console.log(generated)
     return generated
 }
 //passphrase_length: u32, passphrase_numbers: bool, passphrase_special_char_type: String
@@ -40,7 +38,5 @@ export async function generatePassphrase(
         passphraseNumbers: nums,
         passphraseSpecialCharType: specialCharacter
     })
-    console.log(len)
-    console.log(generated)
     return generated
 }
