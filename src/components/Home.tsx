@@ -1,7 +1,7 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, rem, Popover, Progress } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
-import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { open as open_tauri } from '@tauri-apps/api/dialog';
@@ -207,51 +207,6 @@ export default function Home() {
   } else {
     availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
-
-  function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
-    return (
-      <Text
-        c={meets ? 'teal' : 'red'}
-        style={{ display: 'flex', alignItems: 'center' }}
-        mt={7}
-        size="sm"
-      >
-        {meets ? (
-          <IconCheck style={{ width: rem(14), height: rem(14) }} />
-        ) : (
-          <IconX style={{ width: rem(14), height: rem(14) }} />
-        )}{' '}
-        <Box ml={10}>{label}</Box>
-      </Text>
-    );
-  }
-
-  const requirements = [
-    { re: /[0-9]/, label: 'Includes number' },
-    { re: /[a-z]/, label: 'Includes lowercase letter' },
-    { re: /[A-Z]/, label: 'Includes uppercase letter' },
-    { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Includes special symbol' },
-  ];
-
-  function getStrength(password: string) {
-    let multiplier = password.length > 5 ? 0 : 1;
-
-    requirements.forEach((requirement) => {
-      if (!requirement.re.test(password)) {
-        multiplier += 1;
-      }
-    });
-
-    return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
-  }
-
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const checks = requirements.map((requirement, index) => (
-    <PasswordRequirement key={index} label={requirement.label} meets={requirement.re.test(password)} />
-  ));
-
-  const strength = getStrength(password);
-  const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
   return (
     <>

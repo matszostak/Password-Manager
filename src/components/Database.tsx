@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
@@ -14,9 +14,17 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
 
+    const [itemStates, setItemStates] = useState(Array(dbVault.length).fill(false));
+    // Function to toggle the state of an item at a specific index
+    const toggleItemState = (index: number) => {
+        setItemStates((prevStates) =>
+            prevStates.map((state, i) => (i === index ? !state : state))
+        );
+    };
+
     const map_password = dbVault.map(
-        (entry: any) =>
-            <Table.Tr key={entry.id}>
+        (entry: any, index: number) =>
+            <Table.Tr key={entry.id} onClick={() => toggleItemState(index)}>
                 <Table.Td>{entry.username}</Table.Td>
                 <Table.Td>
                     <PasswordInput
@@ -27,7 +35,11 @@ export default function Database({ parentState, setParentState }: { parentState:
                         pointer
                     />
                 </Table.Td>
-                <Table.Td>{entry.urls}</Table.Td>
+                <Table.Td>
+                    <Text truncate="end" w={160}>
+                        {entry.urls}
+                    </Text>
+                </Table.Td>
             </Table.Tr>
     )
 
@@ -39,102 +51,102 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [visible, { toggle }] = useDisclosure(false);
     return (
         <>
-            <ScrollArea>
-                <Box>
-                    <Text>{name}</Text>
-                    <Button
-                        color='red'
-                        onClick={
-                            () => {
-                                localStorage.setItem('isDbOpened', 'false')
-                                localStorage.setItem('dbContent', '')
-                                setParentState(!parentState);
-                            }
+            <Box>
+                <Text>{name}</Text>
+                <Button
+                    color='red'
+                    onClick={
+                        () => {
+                            localStorage.setItem('isDbOpened', 'false')
+                            localStorage.setItem('dbContent', '')
+                            setParentState(!parentState);
                         }
-                    >Close database</Button>
-                    <Drawer
-                        opened={opened}
-                        onClose={close}
-                        title="Create new entry"
-                        position="right"
-                    >
-                        {
-                            <Box>
-                                <TextInput
-                                    label="Entry name"
-                                    placeholder="Name"
-                                />
-                                <TextInput
-                                    label="Username"
-                                    placeholder="Username"
-                                />
+                    }
+                >Close database</Button>
+                <Drawer
+                    opened={opened}
+                    onClose={close}
+                    title="Create new entry"
+                    position="right"
+                >
+                    {
+                        <Box>
+                            <TextInput
+                                label="Entry name"
+                                placeholder="Name"
+                            />
+                            <TextInput
+                                label="Username"
+                                placeholder="Username"
+                            />
 
-                                <PasswordInput
-                                    label={
-                                        <Group grow wrap="nowrap" gap={6}>
-                                            Password
-                                            <Tooltip label="Password generation settings">
-                                                <ActionIcon
-                                                    variant="subtle"
-                                                    color="indigo"
-                                                    onClick={() => collapseHandlers.toggle()}
-                                                >
-                                                    <IconSettings style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                                </ActionIcon>
-                                            </Tooltip>
-                                        </Group>}
-                                    placeholder="Password"
-                                    rightSection={
-                                        <Group grow wrap="nowrap" gap={6} ml={-40}>
-                                            <Tooltip label="Generate with default settings">
-                                                <ActionIcon
-                                                    variant="subtle"
-                                                    color="indigo"
-                                                    onClick={() => generatePassphraseInterface(4, true, '_')}
-                                                >
-                                                    <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                                </ActionIcon>
-                                            </Tooltip>
+                            <PasswordInput
+                                label={
+                                    <Group grow wrap="nowrap" gap={6}>
+                                        Password
+                                        <Tooltip label="Password generation settings">
                                             <ActionIcon
-                                                color="indigo"
-                                                onClick={toggle}
                                                 variant="subtle"
+                                                color="indigo"
+                                                onClick={() => collapseHandlers.toggle()}
                                             >
-                                                {visible ? (
-                                                    <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                                ) : (
-                                                    <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                                )}
+                                                <IconSettings style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
                                             </ActionIcon>
-                                        </Group>
-                                    }
-                                    value={String(generatedPassword)}
-                                    onChange={(e) => setGeneratedPassword(e.target.value)}
-                                    visible={visible}
-                                />
+                                        </Tooltip>
+                                    </Group>}
+                                placeholder="Password"
+                                rightSection={
+                                    <Group grow wrap="nowrap" gap={6} ml={-40}>
+                                        <Tooltip label="Generate with default settings">
+                                            <ActionIcon
+                                                variant="subtle"
+                                                color="indigo"
+                                                onClick={() => generatePassphraseInterface(4, true, '_')}
+                                            >
+                                                <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                            </ActionIcon>
+                                        </Tooltip>
+                                        <ActionIcon
+                                            color="indigo"
+                                            onClick={toggle}
+                                            variant="subtle"
+                                        >
+                                            {visible ? (
+                                                <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                            ) : (
+                                                <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                            )}
+                                        </ActionIcon>
+                                    </Group>
+                                }
+                                value={String(generatedPassword)}
+                                onChange={(e) => setGeneratedPassword(e.target.value)}
+                                visible={visible}
+                            />
 
-                                <Collapse in={collapse}>
-                                    <Text>Basically a minified version of PasswordGenerator</Text>
-                                    <PasswordGenerator />
-                                    <Text>Well it basically works without any changes, only need to do something to copy the generated stuff to PasswordInput</Text>
-                                </Collapse>
+                            <Collapse in={collapse}>
+                                <Text>Basically a minified version of PasswordGenerator</Text>
+                                <PasswordGenerator />
+                                <Text>Well it basically works without any changes, only need to do something to copy the generated stuff to PasswordInput</Text>
+                            </Collapse>
 
-                                <TextInput
-                                    label="URL"
-                                    placeholder="URL"
-                                />
-                                <Textarea
-                                    label="Notes"
-                                    placeholder="Notes"
-                                    autosize
-                                    minRows={4}
-                                    maxRows={8}
-                                />
-                            </Box>
-                        }
-                    </Drawer>
+                            <TextInput
+                                label="URL"
+                                placeholder="URL"
+                            />
+                            <Textarea
+                                label="Notes"
+                                placeholder="Notes"
+                                autosize
+                                minRows={4}
+                                maxRows={8}
+                            />
+                        </Box>
+                    }
+                </Drawer>
 
-                    <Button onClick={open}>Open Drawer</Button>
+                <Button onClick={open}>Create new</Button>
+                <Table.ScrollContainer minWidth={20}>
                     <Table highlightOnHover>
                         <Table.Thead>
                             <Table.Tr>
@@ -145,9 +157,8 @@ export default function Database({ parentState, setParentState }: { parentState:
                         </Table.Thead>
                         <Table.Tbody>{map_password}</Table.Tbody>
                     </Table>
-                </Box>
-            </ScrollArea>
-
+                </Table.ScrollContainer>
+            </Box>
         </>
         // TODO: handle change and saving the database here
     );
