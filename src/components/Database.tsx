@@ -1,15 +1,17 @@
-import { Box, Group, Button, Collapse, Table, ScrollArea, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, ScrollArea, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconEye, IconEyeOff, IconRefresh } from "@tabler/icons-react"
+import { IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
+import PasswordGenerator from "./PasswordGenerator"
 
-export default function Database({ parentState, setParentState } : { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Database({ parentState, setParentState }: { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(String(localStorage.getItem('dbContent')))
     let name: string = parsedContent.name // database name from JSON
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
     const [opened, { open, close }] = useDisclosure(false);
+    const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
 
     const map_password = dbVault.map(
@@ -40,8 +42,8 @@ export default function Database({ parentState, setParentState } : { parentState
             <ScrollArea>
                 <Box>
                     <Text>{name}</Text>
-                    <Button 
-                        color='red' 
+                    <Button
+                        color='red'
                         onClick={
                             () => {
                                 localStorage.setItem('isDbOpened', 'false')
@@ -66,18 +68,33 @@ export default function Database({ parentState, setParentState } : { parentState
                                     label="Username"
                                     placeholder="Username"
                                 />
+
                                 <PasswordInput
-                                    label="Password"
+                                    label={
+                                        <Group grow wrap="nowrap" gap={6}>
+                                            Password
+                                            <Tooltip label="Password generation settings">
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="indigo"
+                                                    onClick={() => collapseHandlers.toggle()}
+                                                >
+                                                    <IconSettings style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                </ActionIcon>
+                                            </Tooltip>
+                                        </Group>}
                                     placeholder="Password"
                                     rightSection={
                                         <Group grow wrap="nowrap" gap={6} ml={-40}>
-                                            <ActionIcon
-                                                variant="subtle"
-                                                color="indigo"
-                                                onClick={() => generatePassphraseInterface(4, true, '_')}
-                                            >
-                                                <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                            </ActionIcon>
+                                            <Tooltip label="Generate with default settings">
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    color="indigo"
+                                                    onClick={() => generatePassphraseInterface(4, true, '_')}
+                                                >
+                                                    <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                                </ActionIcon>
+                                            </Tooltip>
                                             <ActionIcon
                                                 color="indigo"
                                                 onClick={toggle}
@@ -95,6 +112,12 @@ export default function Database({ parentState, setParentState } : { parentState
                                     onChange={(e) => setGeneratedPassword(e.target.value)}
                                     visible={visible}
                                 />
+
+                                <Collapse in={collapse}>
+                                    <Text>Basically a minified version of PasswordGenerator</Text>
+                                    <PasswordGenerator />
+                                    <Text>Well it basically works without any changes, only need to do something to copy the generated stuff to PasswordInput</Text>
+                                </Collapse>
 
                                 <TextInput
                                     label="URL"

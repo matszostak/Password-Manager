@@ -1,4 +1,4 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, rem, Popover, Progress } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useState } from "react";
@@ -16,6 +16,7 @@ import Database from "./Database";
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
   const [password, setPassword] = useInputState('') // Keep it a hook for now
+  const [confirmPassword, setConfirmPassword] = useInputState('')
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
@@ -42,6 +43,10 @@ export default function Home() {
 
   const createDatabase = async () => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
+    if (password !== confirmPassword) {
+      form.reset()
+      return
+    }
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
@@ -203,6 +208,51 @@ export default function Home() {
     availableOrCreateNew = <Title size={16}>No databases found. Please create a new database or open existing</Title>
   }
 
+  function PasswordRequirement({ meets, label }: { meets: boolean; label: string }) {
+    return (
+      <Text
+        c={meets ? 'teal' : 'red'}
+        style={{ display: 'flex', alignItems: 'center' }}
+        mt={7}
+        size="sm"
+      >
+        {meets ? (
+          <IconCheck style={{ width: rem(14), height: rem(14) }} />
+        ) : (
+          <IconX style={{ width: rem(14), height: rem(14) }} />
+        )}{' '}
+        <Box ml={10}>{label}</Box>
+      </Text>
+    );
+  }
+
+  const requirements = [
+    { re: /[0-9]/, label: 'Includes number' },
+    { re: /[a-z]/, label: 'Includes lowercase letter' },
+    { re: /[A-Z]/, label: 'Includes uppercase letter' },
+    { re: /[$&+,:;=?@#|'<>.^*()%!-]/, label: 'Includes special symbol' },
+  ];
+
+  function getStrength(password: string) {
+    let multiplier = password.length > 5 ? 0 : 1;
+
+    requirements.forEach((requirement) => {
+      if (!requirement.re.test(password)) {
+        multiplier += 1;
+      }
+    });
+
+    return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
+  }
+
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const checks = requirements.map((requirement, index) => (
+    <PasswordRequirement key={index} label={requirement.label} meets={requirement.re.test(password)} />
+  ));
+
+  const strength = getStrength(password);
+  const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
+
   return (
     <>
       <Space h={60} />
@@ -229,9 +279,7 @@ export default function Home() {
                 />
 
                 <Group mt="md">
-                  <Button type="submit" onClick={() => {
-                    setPassword(String(form.values.confirmPassword))
-                  }}>
+                  <Button type="submit">
                     Submit
                   </Button>
                 </Group>
@@ -250,7 +298,7 @@ export default function Home() {
         </>
       ) : (
         <>
-          
+
           <Database parentState={parentState} setParentState={setParentState} />
         </>
       )}
