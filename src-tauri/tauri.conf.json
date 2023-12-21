@@ -70,8 +70,8 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "width": 800,
+        "height": 750,
+        "width": 1000,
         "resizable": true,
         "title": "Password Manager",
         "minHeight": 400,

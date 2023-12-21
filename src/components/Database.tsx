@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Space } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
@@ -11,8 +11,10 @@ export default function Database({ parentState, setParentState }: { parentState:
     let creationDate: string = parsedContent.creationdate // database creationdate from JSON
     let dbVault = parsedContent.vault // database vault
     const [opened, { open, close }] = useDisclosure(false);
+    const [test, testHandler] = useDisclosure(false);
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
+    const [currentEntry, setCurrentEntry] = useState<any>()
 
     const [itemStates, setItemStates] = useState(Array(dbVault.length).fill(false));
     // Function to toggle the state of an item at a specific index
@@ -40,6 +42,16 @@ export default function Database({ parentState, setParentState }: { parentState:
                         {entry.urls}
                     </Text>
                 </Table.Td>
+                <Table.Td>
+                    <Button.Group>
+                        <Button color="indigo" w={80} onClick={() => {
+                            setCurrentEntry(entry)
+                            testHandler.open()
+                        }}>Edit</Button>
+                        <Button color="red" w={80}>Delete</Button>
+                    </Button.Group>
+                </Table.Td>
+
             </Table.Tr>
     )
 
@@ -144,7 +156,18 @@ export default function Database({ parentState, setParentState }: { parentState:
                         </Box>
                     }
                 </Drawer>
-
+                <Drawer
+                    opened={test}
+                    onClose={testHandler.close}
+                    title="Edit"
+                    position="right"
+                >
+                    {(currentEntry !== undefined) ? (
+                        currentEntry.password + '\n' + currentEntry.username
+                    ) : (
+                        "Error."
+                    )}
+                </Drawer>
                 <Button onClick={open}>Create new</Button>
                 <Table.ScrollContainer minWidth={20}>
                     <Table highlightOnHover>
@@ -153,6 +176,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                                 <Table.Th>Username</Table.Th>
                                 <Table.Th>Password</Table.Th>
                                 <Table.Th>More</Table.Th>
+                                <Table.Th>Options</Table.Th>
                             </Table.Tr>
                         </Table.Thead>
                         <Table.Tbody>{map_password}</Table.Tbody>
