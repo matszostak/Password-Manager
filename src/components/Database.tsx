@@ -1,8 +1,8 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Space } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Space, Divider } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
-import { generatePassphrase } from "../utils/passwordGeneration"
+import { generatePassphrase, generatePassword } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
 
 export default function Database({ parentState, setParentState }: { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -15,7 +15,6 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
     const [currentEntry, setCurrentEntry] = useState<any>()
-
     const [itemStates, setItemStates] = useState(Array(dbVault.length).fill(false));
     // Function to toggle the state of an item at a specific index
     const toggleItemState = (index: number) => {
@@ -23,6 +22,10 @@ export default function Database({ parentState, setParentState }: { parentState:
             prevStates.map((state, i) => (i === index ? !state : state))
         );
     };
+
+    const handlePasswordSettingFunction = (passwordFromTheGenerator: string) => {
+        setGeneratedPassword(passwordFromTheGenerator)
+    }
 
     const map_password = dbVault.map(
         (entry: any, index: number) =>
@@ -137,9 +140,9 @@ export default function Database({ parentState, setParentState }: { parentState:
                             />
 
                             <Collapse in={collapse}>
-                                <Text>Basically a minified version of PasswordGenerator</Text>
-                                <PasswordGenerator />
-                                <Text>Well it basically works without any changes, only need to do something to copy the generated stuff to PasswordInput</Text>
+                                <Divider my="sm" />
+                                <PasswordGenerator handlePasswordSetting={handlePasswordSettingFunction}/>
+                                <Divider my="sm" />
                             </Collapse>
 
                             <TextInput

@@ -5,7 +5,7 @@ import { generateDefault, generatePassphrase, generatePassword } from '../utils/
 import { randomId, useListState } from '@mantine/hooks';
 import { MAX_PASSPHRASE_LENGTH, MAX_PASSWORD_LENGTH, MIN_PASSPHRASE_LENGTH, MIN_PASSWORD_LENGTH, marksPassphrase, marksPassword } from '../utils/constants';
 
-export default function PasswordGenerator() {
+export default function PasswordGenerator(props: any) {
     const [passwordLength, setPasswordLength] = useState(32);
     const [passphraseLength, setPassphraseLength] = useState(4)
     const [wordOrPhrase, setWordOrPhrase] = useState('passphrase')
@@ -48,10 +48,12 @@ export default function PasswordGenerator() {
         // TODO: handle error when the user unchecks every box
         let x: any = await generatePassword(length, nums, lower, upper, symbols, spaces, similar, strict)
         setGeneratedPassword(String(x))
+        props.handlePasswordSetting(String(x))
     }
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
         let x: any = await generatePassphrase(length, numbers, specialCharacter)
         setGeneratedPassword(String(x))
+        props.handlePasswordSetting(String(x))
     }
     function helper() {
         if (wordOrPhrase === 'passphrase') {
@@ -73,7 +75,7 @@ export default function PasswordGenerator() {
                         label="Use numbers"
                         description="Whether to use numbers in passphrase generation"
                     />
-
+                    <Space h={10} />
                     <Button onClick={() =>
                         generatePassphraseInterface(passphraseLength, usePassphraseNumbers, '_')
                     }>Generate!</Button>
@@ -95,6 +97,7 @@ export default function PasswordGenerator() {
                     />
                     <h1>{passwordLength}</h1>
                     {items}
+                    <Space h={10} />
                     <Button onClick={() =>
                         generatePasswordInterface(
                             passwordLength,
