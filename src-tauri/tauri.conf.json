@@ -62,7 +62,7 @@
         "signingIdentity": null
       },
       "resources": [
-        "src/res/*"
+        "resources/*"
       ],
       "shortDescription": "",
       "targets": "all",

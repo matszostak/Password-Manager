@@ -54,7 +54,7 @@ lazy_static! {
     };
 }
 fn load_database() -> HashMap<i32, String> {
-    let file_path = "src\\res\\eff_large_wordlist.txt"; 
+    let file_path = "resources\\eff_large_wordlist.txt"; 
     let contents = fs::read_to_string(file_path).unwrap();
     let mut map = HashMap::new();
     

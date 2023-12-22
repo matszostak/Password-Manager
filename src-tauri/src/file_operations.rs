@@ -19,7 +19,7 @@ pub fn create_new_database(path: String, password: String) {
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
 
     // TODO: encrypt file with password and basically handle key creation
-    let template_path = Path::new("src\\res\\db_template.json");
+    let template_path = Path::new("resources\\db_template.json");
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
         let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
@@ -83,6 +83,6 @@ pub fn create_useful_files() {
     let file = format!("{}{}", combined_string2, "\\profile.json");
     if !Path::new(file.as_str()).exists() {
         println!("Config file does not exist... creating");
-        let _ = fs::copy("src\\res\\profile.json", file);
+        let _ = fs::copy("resources\\profile.json", file);
     }
 }
