@@ -1,18 +1,36 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
+import { IconDots, IconEye, IconEyeOff, IconRefresh, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
 
+interface AccordionLabelProps {
+    name: string;
+    urls: string;
+}
+
+function AccordionLabel({ name, urls }: AccordionLabelProps) {
+    return (
+        <Group wrap="nowrap">
+            <div>
+                <Text>{name}</Text>
+                <Text size="sm" c="dimmed" fw={400}>
+                    {urls}
+                </Text>
+            </div>
+        </Group>
+    );
+}
+
 export default function Database({ parentState, setParentState }: { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
     let parsedContent = JSON.parse(String(localStorage.getItem('dbContent')))
     let [parsedContentState, setParsedContentState] = useState(parsedContent)
-    let name: string = parsedContentState.name // database name from JSON
+    let name: string = parsedContentState.vaultName // database name from JSON
     let creationDate: string = parsedContentState.creationdate // database creationdate from JSON
     let dbVault = parsedContentState.vault // database vault
     const [opened, { open, close }] = useDisclosure(false);
-    const [test, testHandler] = useDisclosure(false);
+    const [renameDrawer, renameDrawerHandler] = useDisclosure(false);
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
     const [currentEntry, setCurrentEntry] = useState<any>()
@@ -28,12 +46,6 @@ export default function Database({ parentState, setParentState }: { parentState:
         setGeneratedPassword(passwordFromTheGenerator)
     }
 
-    const [testNumber, setTestNumber] = useState(0)
-    const changeNameTest = () => {
-        setTestNumber(testNumber + 1)
-        parsedContentState.name = String(testNumber)
-    }
-
     const [currentUsername, setCurrentUsername] = useState('')
     const map_password = dbVault.map(
         (entry: any, index: number) =>
@@ -45,7 +57,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                         value={entry.password}
                         onChange={() => { }} // onChange to supress a warning
                         w={160}
-                        pointer={false}
                     />
                 </Table.Td>
                 <Table.Td>
@@ -58,7 +69,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         <Button color="indigo" w={80} onClick={() => {
                             setCurrentEntry(entry) // TODO: create a state for every editable variable; then use those instead of a currentEntry
                             setCurrentUsername(entry.username)
-                            testHandler.open()
+                            renameDrawerHandler.open()
                         }}>Edit</Button>
                         <Button color="red" w={80}>Delete</Button>
                     </Button.Group>
@@ -66,6 +77,30 @@ export default function Database({ parentState, setParentState }: { parentState:
 
             </Table.Tr>
     )
+
+    const items = dbVault.map((item: any, index: number) => (
+        <Accordion.Item
+            key={item.id}
+            value={item.username}
+        >
+            <Center>
+                <Accordion.Control>
+                    <AccordionLabel {...item} />
+                </Accordion.Control>
+                <ActionIcon size="lg" variant="subtle" color="gray" onClick={() => console.log(item.username)}>
+                    <IconDots size="1rem" />
+                </ActionIcon>
+                <ActionIcon size="lg" variant="subtle" color="gray" onClick={() => {
+                            setCurrentEntry(item) // TODO: create a state for every editable variable; then use those instead of a currentEntry
+                            setCurrentUsername(item.username)
+                            renameDrawerHandler.open()
+                        }}>
+                    <IconDots size="1rem" />
+                </ActionIcon>
+            </Center>
+            <Accordion.Panel>{item.username + ' ' + item.password}</Accordion.Panel>
+        </Accordion.Item>
+    ));
 
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
         let x: any = await generatePassphrase(length, numbers, specialCharacter)
@@ -169,8 +204,8 @@ export default function Database({ parentState, setParentState }: { parentState:
                     }
                 </Drawer>
                 <Drawer
-                    opened={test}
-                    onClose={testHandler.close}
+                    opened={renameDrawer}
+                    onClose={renameDrawerHandler.close}
                     title="Edit"
                     position="right"
                 >
@@ -182,12 +217,12 @@ export default function Database({ parentState, setParentState }: { parentState:
                                     setCurrentUsername(e.currentTarget.value)
                                 }}
                             />
-                            <Button 
+                            <Button
                                 onClick={() => {
                                     let temp = currentEntry
                                     temp.username = currentUsername
                                     setCurrentEntry(temp)
-                                    testHandler.close()
+                                    renameDrawerHandler.close()
                                     console.log(currentEntry)
                                     console.log(parsedContentState) // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
                                 }}
@@ -200,21 +235,17 @@ export default function Database({ parentState, setParentState }: { parentState:
                     )}
                 </Drawer>
                 <Button onClick={open}>Create new</Button>
-                <Button onClick={changeNameTest}></Button>
-                <Table.ScrollContainer minWidth={20}>
-                    <Table highlightOnHover>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>Username</Table.Th>
-                                <Table.Th>Password</Table.Th>
-                                <Table.Th>More</Table.Th>
-                                <Table.Th>Options</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>{map_password}</Table.Tbody>
-                    </Table>
-                </Table.ScrollContainer>
             </Box>
+
+            <Accordion
+                variant="contained"
+                radius="md"
+                chevronPosition="left"
+                defaultValue={[]}
+                multiple={true}
+            >
+                {items}
+            </Accordion>
         </>
         // TODO: handle change and saving the database here
     );

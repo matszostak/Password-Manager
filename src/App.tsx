@@ -1,8 +1,11 @@
 /* React Imports */
 import { Route, Routes } from 'react-router-dom'
-import { useEffect } from 'react';
-/* Tauri Imports */
-import { exists, createDir, copyFile, writeTextFile, readTextFile } from '@tauri-apps/api/fs'
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
+import '@mantine/core/styles.css';
+import '@mantine/core/styles/global.css';
+import '@mantine/notifications/styles.css';
+import 'mantine-datatable/styles.layer.css';
 
 /* Mantine Imports */
 import {

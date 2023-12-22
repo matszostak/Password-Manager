@@ -17,7 +17,6 @@ fn test() {
 fn main() {
     file_operations::create_useful_files();
     tauri::Builder::default()
-        
         .invoke_handler(tauri::generate_handler![
             file_operations::create_new_database,
             file_operations::decrypt_database,

@@ -1,10 +1,12 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
 import '@mantine/core/styles.css';
 import '@mantine/core/styles/global.css';
 import '@mantine/notifications/styles.css';
+import 'mantine-datatable/styles.layer.css';
 import { MantineProvider, createTheme } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { BrowserRouter } from 'react-router-dom';
