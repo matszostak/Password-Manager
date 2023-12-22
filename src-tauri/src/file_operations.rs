@@ -2,6 +2,7 @@ use rand::RngCore;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 use serde_json;
+use std::process;
 use std::{fs, path::Path, str};
 
 use super::aes_encryption::decrypt;
@@ -31,6 +32,7 @@ pub fn create_new_database(path: String, password: String) {
         fs::write(&path, &salt_and_iv).unwrap();
     } else {
         println!("Something went wrong.");
+        process::exit(1);
     }
 }
 

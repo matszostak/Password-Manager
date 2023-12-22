@@ -14,7 +14,16 @@
     "allowlist": {
       "fs": {
         "all" : true,
-        "scope": ["**"]
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true,
+        "scope": ["**", "**/*", "/**/*"]
       },
       "clipboard": {
         "writeText": true,
@@ -52,7 +61,9 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "resources": [],
+      "resources": [
+        "src/res/*"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {
