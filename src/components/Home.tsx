@@ -15,8 +15,7 @@ import Database from "./Database";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  const [password, setPassword] = useInputState('') // Keep it a hook for now
-  const [confirmPassword, setConfirmPassword] = useInputState('')
+  const [databasePassword, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
@@ -41,12 +40,9 @@ export default function Home() {
     handleRead().then(() => setRefreshKey(oldKey => oldKey + 1)) // REFRESH KEY FOR THE WIN THIS IS AMAZING!!!
   })
 
-  const createDatabase = async () => {
+  const createDatabase = async (password: string) => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
-    if (password !== confirmPassword) {
-      form.reset()
-      return
-    }
+    console.log('Hello 1 ' + password)
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
@@ -74,7 +70,7 @@ export default function Home() {
   const form = useForm({
     validate: {
       confirmPassword: (value, values) =>
-        value !== values.password ? 'Passwords did not match' : setPassword(String(values.password)),
+        value !== values.password ? 'Passwords did not match' : null,
     },
   });
 
@@ -215,10 +211,12 @@ export default function Home() {
         <>
           <Modal opened={opened} onClose={close} title="Create new password database" size="md">
             <Box maw={340} mx="auto">
-              <form onSubmit={form.onSubmit(() => {
-                createDatabase()
-                close()
+              <form onSubmit={form.onSubmit((values) => {
                 setRefreshKey(oldKey => oldKey + 1)
+                createDatabase(String(values.confirmPassword))
+                console.log(values)
+                form.reset()
+                close()
               })}>
                 <PasswordInput
                   label="Password"
