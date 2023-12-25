@@ -1,9 +1,10 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Mark } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
+import { v4 as uuidv4 } from 'uuid'
 
 interface ThProps {
     children: React.ReactNode;
@@ -80,26 +81,42 @@ export default function Database({ parentState, setParentState }: { parentState:
     let [parsedContentState, setParsedContentState] = useState(parsedContent)
     let name: string = parsedContentState.vaultName // database name from JSON
     let dbVault = parsedContentState.vault
-
-    console.log('========================')
-    console.log(parsedContentState)
-    console.log('========================')
+    const [search, setSearch] = useState('');
+    const [sortedData, setSortedData] = useState(parsedContentState.vault);
+    const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
+    const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
     const [opened, { open, close }] = useDisclosure(false);
     const [renameDrawer, renameDrawerHandler] = useDisclosure(false);
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
     const [currentEntry, setCurrentEntry] = useState<any>()
+    const [visible, { toggle }] = useDisclosure(false);
+    const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
+
+    // Used to edit stuff, probably will be used to add new stuff
     const [currentEntryIndex, setCurrentEntryIndex] = useState(-1)
+    const [currentName, setCurrentName] = useState('')
+    const [currentUsername, setCurrentUsername] = useState('')
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [currentUrls, setCurrentUrls] = useState('')
+    const [currentNotes, setCurrentNotes] = useState('')
+
+    const [_refreshKey, setRefreshKey] = useState(0);
+
+    function clearCurrentStuff() {
+        setCurrentEntryIndex(-1)
+        setCurrentName('')
+        setCurrentUsername('')
+        setCurrentPassword('')
+        setCurrentUrls('')
+        setCurrentNotes('')
+    }
 
     const handlePasswordSettingFunction = (passwordFromTheGenerator: string) => {
         setGeneratedPassword(passwordFromTheGenerator)
+        setCurrentPassword(passwordFromTheGenerator)
     }
-
-    const [search, setSearch] = useState('');
-    const [sortedData, setSortedData] = useState(dbVault);
-    const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
-    const [reverseSortDirection, setReverseSortDirection] = useState(false);
 
     const setSorting = (field: keyof RowData) => {
         const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -114,11 +131,9 @@ export default function Database({ parentState, setParentState }: { parentState:
         setSortedData(sortData(JSON.parse(JSON.stringify(parsedContentState.vault)), { sortBy, reversed: reverseSortDirection, search: value }));
     };
 
-    const [currentUsername, setCurrentUsername] = useState('')
-
-    const rows = sortedData.map((row: any, index: number) => (
+    let rows = sortedData.map((row: any, index: number) => (
         <>
-            <Table.Tr >
+            <Table.Tr key={row.name}>
 
                 <Accordion.Item
                     key={row.name}
@@ -127,7 +142,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                 >
                     <Center>
                         <Accordion.Control>
-
                             <Group wrap="nowrap">
                                 <div>
                                     <Text>{row.name}</Text>
@@ -137,28 +151,185 @@ export default function Database({ parentState, setParentState }: { parentState:
 
                                 </div>
                             </Group>
-
                         </Accordion.Control>
-                        <ActionIcon size="lg" variant="subtle" color="gray" onClick={() => {
-                            renameDrawerHandler.open()
-                            setCurrentEntry(row)
-                            setCurrentEntryIndex(index)
-                        }}>
-                            <IconDots size="1rem" />
-                        </ActionIcon>
+                        <Tooltip label="Edit entry">
+                            <ActionIcon size="lg" variant="subtle" color="gray" onClick={() => {
+                                open()
+                                setEditing(true)
+                                setCurrentName(row.name)
+                                setCurrentUsername(row.username)
+                                setCurrentPassword(row.password)
+                                setCurrentUrls(row.urls)
+                                setCurrentNotes(row.notes)
+                                setCurrentEntry(row)
+                                setCurrentEntryIndex(index)
+                            }}>
+                                <IconDots size="1rem" />
+                            </ActionIcon>
+                        </Tooltip>
                     </Center>
                     <Accordion.Panel>{row.username + ' ' + row.password + ' ' + row.urls}</Accordion.Panel>
                 </Accordion.Item>
             </Table.Tr>
         </>
     ));
+    // <Text color="indigo">Editing entry: {currentName}</Text>
+    const drawer = (
+        <Drawer
+            opened={opened}
+            onClose={close}
+            title={editing ? (
+                <>
+                    <Highlight
+                        ta="center"
+                        highlight={[currentName]}
+                        color="indigo"
+                        highlightStyles={{
+                            fontWeight: 700,
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                        }}
+                    >
+                        {"Editing " + String(currentName)}
+                    </Highlight>
+                </>
+
+            ) : (
+                "Create new entry"
+            )}
+            position="right"
+        >
+            {
+                <Box>
+                    <TextInput
+                        label="Entry name"
+                        placeholder="Name"
+                        value={currentName}
+                        onChange={(e) => {
+                            setCurrentName(e.currentTarget.value)
+                        }}
+                    />
+                    <TextInput
+                        label="Username"
+                        placeholder="Username"
+                        value={currentUsername}
+                        onChange={(e) => {
+                            setCurrentUsername(e.currentTarget.value)
+                        }}
+                    />
+
+                    <PasswordInput
+                        label={
+                            <Group grow wrap="nowrap" gap={6}>
+                                Password
+                                <Tooltip label="Password generation settings">
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="indigo"
+                                        onClick={() => collapseHandlers.toggle()}
+                                    >
+                                        <IconSettings style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                    </ActionIcon>
+                                </Tooltip>
+                            </Group>}
+                        placeholder="Password"
+                        rightSection={
+                            <Group grow wrap="nowrap" gap={6} ml={-40}>
+                                <Tooltip label="Generate with default settings">
+                                    <ActionIcon
+                                        variant="subtle"
+                                        color="indigo"
+                                        onClick={() => generatePassphraseInterface(4, true, '_')}
+                                    >
+                                        <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                    </ActionIcon>
+                                </Tooltip>
+                                <ActionIcon
+                                    color="indigo"
+                                    onClick={toggle}
+                                    variant="subtle"
+                                >
+                                    {visible ? (
+                                        <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                    ) : (
+                                        <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
+                                    )}
+                                </ActionIcon>
+                            </Group>
+                        }
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        visible={visible}
+                    />
+
+                    <Collapse in={collapse}>
+                        <Divider my="sm" />
+                        <PasswordGenerator handlePasswordSetting={handlePasswordSettingFunction} />
+                        <Divider my="sm" />
+                    </Collapse>
+
+                    <TextInput
+                        label="URL"
+                        placeholder="URL"
+                        value={currentUrls}
+                        onChange={(e) => {
+                            setCurrentUrls(e.currentTarget.value)
+                        }}
+                    />
+                    <Textarea
+                        label="Notes"
+                        placeholder="Notes"
+                        autosize
+                        minRows={4}
+                        maxRows={8}
+                        value={currentNotes}
+                        onChange={(e) => {
+                            setCurrentNotes(e.currentTarget.value)
+                        }}
+                    />
+                    <Button
+                        onClick={() => {
+                            if (editing) {
+                                let temp = parsedContentState
+                                temp.vault[currentEntryIndex].name = currentName
+                                temp.vault[currentEntryIndex].username = currentUsername
+                                temp.vault[currentEntryIndex].password = currentPassword
+                                temp.vault[currentEntryIndex].urls = currentUrls
+                                temp.vault[currentEntryIndex].notes = currentNotes
+                                clearCurrentStuff()
+                                setParsedContentState(temp)
+                                renameDrawerHandler.close()
+                                console.log(parsedContentState) // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
+                                close()
+                            } else {
+                                let temp = parsedContentState
+                                let urls: string[] = [currentUrls];
+                                temp.vault = [
+                                    ...temp.vault,
+                                    { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
+                                ]
+                                setParsedContentState(temp)
+                                console.log(parsedContentState)
+                                clearCurrentStuff()
+                                close()
+                                setRefreshKey(oldKey => oldKey + 1)
+                                setSortedData(parsedContentState.vault)
+                            }
+                        }}
+                    >
+                        Save
+                    </Button>
+                </Box>
+            }
+        </Drawer>
+    )
 
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
         let x: any = await generatePassphrase(length, numbers, specialCharacter)
         setGeneratedPassword(String(x))
+        setCurrentPassword(String(x))
     }
 
-    const [visible, { toggle }] = useDisclosure(false);
     return (
         <>
             <Box>
@@ -170,124 +341,28 @@ export default function Database({ parentState, setParentState }: { parentState:
                             localStorage.setItem('isDbOpened', 'false')
                             localStorage.setItem('dbContent', '')
                             setParentState(!parentState);
-                        }
-                    }
+                        }}
                 >Close database</Button>
-                <Drawer
-                    opened={opened}
-                    onClose={close}
-                    title="Create new entry"
-                    position="right"
-                >
-                    {
-                        <Box>
-                            <TextInput
-                                label="Entry name"
-                                placeholder="Name"
-                            />
-                            <TextInput
-                                label="Username"
-                                placeholder="Username"
-                            />
-
-                            <PasswordInput
-                                label={
-                                    <Group grow wrap="nowrap" gap={6}>
-                                        Password
-                                        <Tooltip label="Password generation settings">
-                                            <ActionIcon
-                                                variant="subtle"
-                                                color="indigo"
-                                                onClick={() => collapseHandlers.toggle()}
-                                            >
-                                                <IconSettings style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                            </ActionIcon>
-                                        </Tooltip>
-                                    </Group>}
-                                placeholder="Password"
-                                rightSection={
-                                    <Group grow wrap="nowrap" gap={6} ml={-40}>
-                                        <Tooltip label="Generate with default settings">
-                                            <ActionIcon
-                                                variant="subtle"
-                                                color="indigo"
-                                                onClick={() => generatePassphraseInterface(4, true, '_')}
-                                            >
-                                                <IconRefresh style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                            </ActionIcon>
-                                        </Tooltip>
-                                        <ActionIcon
-                                            color="indigo"
-                                            onClick={toggle}
-                                            variant="subtle"
-                                        >
-                                            {visible ? (
-                                                <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                            ) : (
-                                                <IconEye style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-                                            )}
-                                        </ActionIcon>
-                                    </Group>
-                                }
-                                value={String(generatedPassword)}
-                                onChange={(e) => setGeneratedPassword(e.target.value)}
-                                visible={visible}
-                            />
-
-                            <Collapse in={collapse}>
-                                <Divider my="sm" />
-                                <PasswordGenerator handlePasswordSetting={handlePasswordSettingFunction} />
-                                <Divider my="sm" />
-                            </Collapse>
-
-                            <TextInput
-                                label="URL"
-                                placeholder="URL"
-                            />
-                            <Textarea
-                                label="Notes"
-                                placeholder="Notes"
-                                autosize
-                                minRows={4}
-                                maxRows={8}
-                            />
-                        </Box>
-                    }
-                </Drawer>
-                <Drawer
-                    opened={renameDrawer}
-                    onClose={renameDrawerHandler.close}
-                    title="Edit"
-                    position="right"
-                >
-                    {(currentEntry !== undefined) ? (
-                        <>
-                            <TextInput
-                                value={currentUsername}
-                                onChange={(e) => {
-                                    setCurrentUsername(e.currentTarget.value)
-                                }}
-                            />
-                            <Button
-                                onClick={() => {
-                                    let temp = parsedContentState
-                                    temp.vault[currentEntryIndex].username = currentUsername
-                                    setCurrentUsername('')
-                                    setParsedContentState(temp)
-                                    renameDrawerHandler.close()
-                                    console.log(parsedContentState) // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
-                                }}
-                            >
-                                Save
-                            </Button>
-                        </>
-                    ) : (
-                        "Error."
-                    )}
-                </Drawer>
-                <Button onClick={open}>Create new</Button>
+                {drawer}
+                <Button
+                    onClick={
+                        () => {
+                            setEditing(false)
+                            setCurrentEntryIndex(-1)
+                            clearCurrentStuff()
+                            open()
+                        }}
+                >Create new</Button>
+                <Button
+                    onClick={
+                        () => {
+                            localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
+                            console.log(localStorage.getItem('dbContent'))
+                        }}
+                    color={"green"}
+                >Save database</Button>
             </Box>
-
+            <Space h={20} />
             <TextInput
                 placeholder="Search by any field"
                 mb="md"

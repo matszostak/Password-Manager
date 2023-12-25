@@ -81,8 +81,8 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 750,
-        "width": 1000,
+        "height": 768,
+        "width": 1024,
         "resizable": true,
         "title": "Password Manager",
         "minHeight": 400,
