@@ -64,7 +64,7 @@ pub fn encrypt_database(
     path: String,
     password: String, /* password will be stored somewhere when DB is successfully decrypted */
     data: String,
-) {
+) -> String {
     let mut source_rng = rand::thread_rng();
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
@@ -79,6 +79,7 @@ pub fn encrypt_database(
     let mut encrypted: Vec<u8> = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
     salt_and_iv.append(&mut encrypted);
     fs::write(&path, &salt_and_iv).unwrap();
+    return "encrypted".to_string();
 }
 
 pub fn create_useful_files() {

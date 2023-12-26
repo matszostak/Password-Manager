@@ -15,7 +15,6 @@ import Database from "./Database";
 
 export default function Home() {
   const [opened, { open, close }] = useDisclosure(false); // Modal stuff
-  const [databasePassword, setPassword] = useInputState('') // Keep it a hook for now
   // TODO: Save it to lacalStorage or something to get persistence AND if saved, check if file still exists on application startup (in case user deleted file manually)
   // paths also get cleared when using navbar so it has to be changed.
   const [paths] = useState<string[]>([])
@@ -42,7 +41,6 @@ export default function Home() {
 
   const createDatabase = async (password: string) => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
-    console.log('Hello 1 ' + password)
     if (pathOfNewDB) {
       paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log("This item already exists");
       form.reset()
@@ -84,6 +82,7 @@ export default function Home() {
       }]
     });
     if (selected) {
+      localStorage.setItem('openedPath', String(selected))
       modals.open({
         title: 'Open database',
         children: (

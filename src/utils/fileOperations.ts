@@ -37,5 +37,10 @@ export async function saveDbInfoToFile(path: string) {
 }
 
 export async function encryptDatabase(pathIn: string, passwordIn: string) {
-    await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: localStorage.getItem('dbContent')})
+    const status = await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: localStorage.getItem('dbContent')})
+    if (status === 'encrypted') {
+        return status
+    } else {
+        return 'not ok'
+    }
 }

@@ -1,11 +1,12 @@
 import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Mark } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings } from "@tabler/icons-react"
+import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
 import { v4 as uuidv4 } from 'uuid'
 import { encryptDatabase } from "../utils/fileOperations"
+import { notifications } from "@mantine/notifications"
 
 interface ThProps {
     children: React.ReactNode;
@@ -358,8 +359,25 @@ export default function Database({ parentState, setParentState }: { parentState:
                     onClick={
                         () => {
                             localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
-                            console.log(localStorage.getItem('dbContent'))
-                            encryptDatabase('C:\\Users\\Mateusz\\Desktop\\example.secpass', '') // TODO: get the path and password from when the users decrypts the database
+                            encryptDatabase(String(localStorage.getItem('openedPath')), 'aaaa').then(value => {
+                                if (String(value) === 'encrypted') {
+                                    notifications.show({
+                                        message: `Database saved successfully to: ${localStorage.getItem('openedPath')}`,
+                                        title: 'Database saved!',
+                                        color: 'green',
+                                        icon: <IconCheck size="0.9rem" />,
+                                        autoClose: 3600,
+                                    })
+                                } else {
+                                    notifications.show({
+                                        message: 'Something went wrong while saving the database.',
+                                        title: 'Database file not saved!',
+                                        color: "red",
+                                        icon: <IconX size="0.9rem" />,
+                                        autoClose: 3600,
+                                      })
+                                }
+                            }) // TODO: get the password from when the users decrypts the database
                         }}
                     color={"green"}
                 >Save database</Button>
