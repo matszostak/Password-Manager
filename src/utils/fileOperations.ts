@@ -35,3 +35,7 @@ export async function openExistingDatabase(password: string, selected: string) {
 export async function saveDbInfoToFile(path: string) {
     
 }
+
+export async function encryptDatabase(pathIn: string, passwordIn: string) {
+    await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: localStorage.getItem('dbContent')})
+}

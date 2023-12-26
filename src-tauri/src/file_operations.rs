@@ -1,6 +1,6 @@
+use rand::rngs::StdRng;
 use rand::RngCore;
 use rand::SeedableRng;
-use rand::rngs::StdRng;
 use serde_json;
 use std::process;
 use std::{fs, path::Path, str};
@@ -12,9 +12,9 @@ use super::key_derivation::generate_key_from_password_argon2;
 #[tauri::command]
 pub fn create_new_database(path: String, password: String) {
     let mut source_rng = rand::thread_rng();
-    let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap(); 
+    let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
-    rng.fill_bytes(&mut salt); 
+    rng.fill_bytes(&mut salt);
 
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
 
@@ -24,9 +24,8 @@ pub fn create_new_database(path: String, password: String) {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
         let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
-        let iv: [u8; 16] = [0; 16];
+        let iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
         let mut salt_and_iv: Vec<u8> = [&salt[..], &iv].concat();
-        // TODO: save salt, IV and all the important stuff to file
         let mut encrypted: Vec<u8> = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
         salt_and_iv.append(&mut encrypted);
         fs::write(&path, &salt_and_iv).unwrap();
@@ -43,8 +42,8 @@ pub fn decrypt_database(path: String, password: String) -> String {
         return "Path does not exist".to_string();
     }
     let file_contents = fs::read(path).unwrap();
-    let salt = &file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
-    let iv = &file_contents[16..32]; // TODO: change IV?
+    let salt = &file_contents[0..16];
+    let iv = &file_contents[16..32];
     let data = &file_contents[32..];
 
     let key = generate_key_from_password_argon2(password.as_bytes(), salt);
@@ -63,13 +62,23 @@ pub fn decrypt_database(path: String, password: String) -> String {
 #[tauri::command]
 pub fn encrypt_database(
     path: String,
-    _password: String, /* password will be stored somewhere when DB is successfully decrypted */
+    password: String, /* password will be stored somewhere when DB is successfully decrypted */
+    data: String,
 ) {
-    // TODO: finish encryption
-    let old_file_contents = fs::read(path).unwrap();
-    let _salt = &old_file_contents[0..16]; // TODO: change salt, see 'somehow generate it'
-    let _iv = &old_file_contents[16..32]; // TODO: change IV?
-    let _data = &old_file_contents[32..];
+    let mut source_rng = rand::thread_rng();
+    let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
+    let mut salt: [u8; 16] = [0u8; 16];
+    rng.fill_bytes(&mut salt);
+    let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+    let iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
+    println!("Salt: {} | IV: {} | Password: {} | Key: {}", hex::encode(salt), hex::encode(iv), hex::encode(password), hex::encode(key));
+
+    let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
+    let pretty: String = serde_json::to_string_pretty(&res).unwrap();
+    let mut salt_and_iv: Vec<u8> = [&salt[..], &iv].concat();
+    let mut encrypted: Vec<u8> = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
+    salt_and_iv.append(&mut encrypted);
+    fs::write(&path, &salt_and_iv).unwrap();
 }
 
 pub fn create_useful_files() {

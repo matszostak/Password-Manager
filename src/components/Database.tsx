@@ -5,6 +5,7 @@ import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
 import { v4 as uuidv4 } from 'uuid'
+import { encryptDatabase } from "../utils/fileOperations"
 
 interface ThProps {
     children: React.ReactNode;
@@ -358,6 +359,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         () => {
                             localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
                             console.log(localStorage.getItem('dbContent'))
+                            encryptDatabase('C:\\Users\\Mateusz\\Desktop\\example.secpass', '') // TODO: get the path and password from when the users decrypts the database
                         }}
                     color={"green"}
                 >Save database</Button>
