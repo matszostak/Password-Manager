@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Mark } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
@@ -98,6 +98,7 @@ export default function Database({ parentState, setParentState }: { parentState:
 
     // Used to edit stuff, probably will be used to add new stuff
     const [currentEntryIndex, setCurrentEntryIndex] = useState(-1)
+    const [currentID, setcurrentID] = useState('')
     const [currentName, setCurrentName] = useState('')
     const [currentUsername, setCurrentUsername] = useState('')
     const [currentPassword, setCurrentPassword] = useState('')
@@ -108,6 +109,7 @@ export default function Database({ parentState, setParentState }: { parentState:
 
     function clearCurrentStuff() {
         setCurrentEntryIndex(-1)
+        setcurrentID('')
         setCurrentName('')
         setCurrentUsername('')
         setCurrentPassword('')
@@ -158,6 +160,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                             <ActionIcon size="lg" variant="subtle" color="gray" onClick={() => {
                                 open()
                                 setEditing(true)
+                                setcurrentID(row.id)
                                 setCurrentName(row.name)
                                 setCurrentUsername(row.username)
                                 setCurrentPassword(row.password)
@@ -176,6 +179,7 @@ export default function Database({ parentState, setParentState }: { parentState:
         </>
     ));
     // <Text color="indigo">Editing entry: {currentName}</Text>
+
     const drawer = (
         <Drawer
             opened={opened}
@@ -219,7 +223,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                             setCurrentUsername(e.currentTarget.value)
                         }}
                     />
-
                     <PasswordInput
                         label={
                             <Group grow wrap="nowrap" gap={6}>
@@ -321,6 +324,23 @@ export default function Database({ parentState, setParentState }: { parentState:
                     >
                         Save
                     </Button>
+                    <Button
+                        variant="filled"
+                        color="red"
+                        onClick={() => {
+                            let temp = parsedContentState
+                            let temp_vault = temp.vault
+                            console.log(currentID)
+                            temp_vault.splice(currentEntryIndex, 1);
+                            temp.vault = temp_vault
+                            setParsedContentState(temp)
+                            console.log(parsedContentState)
+                            clearCurrentStuff()
+                            close()
+                        }}
+                    >
+                        Delete
+                    </Button>
                 </Box>
             }
         </Drawer>
@@ -331,6 +351,9 @@ export default function Database({ parentState, setParentState }: { parentState:
         setGeneratedPassword(String(x))
         setCurrentPassword(String(x))
     }
+
+
+
 
     return (
         <>
@@ -375,7 +398,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                                         color: "red",
                                         icon: <IconX size="0.9rem" />,
                                         autoClose: 3600,
-                                      })
+                                    })
                                 }
                             }) // TODO: get the password from when the users decrypts the database
                         }}
@@ -429,10 +452,25 @@ export default function Database({ parentState, setParentState }: { parentState:
                                 rows
                             ) : (
                                 <Table.Tr>
-                                    <Table.Td colSpan={Object.keys(dbVault[0]).length}>
+                                    <Table.Td colSpan={3}>
                                         <Text fw={500} ta="center">
-                                            Nothing found
+                                            No passwords found.
+
                                         </Text>
+                                        <Space h={10} />
+                                        <Center>
+                                            <Button
+                                                variant="outline"
+                                                color="indigo"
+                                                onClick={
+                                                    () => {
+                                                        setEditing(false)
+                                                        setCurrentEntryIndex(-1)
+                                                        clearCurrentStuff()
+                                                        open()
+                                                    }}
+                                            >Create new</Button>
+                                        </Center>
                                     </Table.Td>
                                 </Table.Tr>
                             )}

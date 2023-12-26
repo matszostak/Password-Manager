@@ -1,14 +1,5 @@
 {
     "vaultName": "",
     "creationdate": "",
-    "vault": [
-        {
-            "name": "",
-            "id": "",
-            "username": "",
-            "password": "",
-            "urls": [],
-            "notes": ""
-        }
-    ]
+    "vault": []
 }
