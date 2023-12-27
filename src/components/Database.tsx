@@ -304,7 +304,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                                 clearCurrentStuff()
                                 setParsedContentState(temp)
                                 renameDrawerHandler.close()
-                                console.log(parsedContentState) // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
+                                // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
                                 close()
                             } else {
                                 let temp = parsedContentState
@@ -314,7 +314,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                                     { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
                                 ]
                                 setParsedContentState(temp)
-                                console.log(parsedContentState)
                                 clearCurrentStuff()
                                 close()
                                 setRefreshKey(oldKey => oldKey + 1)
@@ -330,11 +329,9 @@ export default function Database({ parentState, setParentState }: { parentState:
                         onClick={() => {
                             let temp = parsedContentState
                             let temp_vault = temp.vault
-                            console.log(currentID)
                             temp_vault.splice(currentEntryIndex, 1);
                             temp.vault = temp_vault
                             setParsedContentState(temp)
-                            console.log(parsedContentState)
                             clearCurrentStuff()
                             close()
                         }}

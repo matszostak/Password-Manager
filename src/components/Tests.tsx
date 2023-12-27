@@ -14,7 +14,6 @@ export default function Tests() {
   const [value, setValue] = useState(fileContent);
 
   const handleWriteClick = async () => {
-    console.log('old stuff')
     //await (message('File saved.'))
   }
 
@@ -61,7 +60,6 @@ export default function Tests() {
       <Button onClick={handleReadFromClipboard}>Read from clipboard!</Button>
       <Text>{clipText}</Text>
       <Button onClick={() => decryptDB()}>Decrypt DB</Button>
-      <Button onClick={() => console.log(value.vault[0])}>Console</Button>
       <Text>{value.encryption}</Text>
       <Text>{typeof(value)}</Text>
       <Button
