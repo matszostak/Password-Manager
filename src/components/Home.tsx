@@ -42,7 +42,7 @@ export default function Home() {
   const createDatabase = async (password: string) => {
     let pathOfNewDB: string | null = await saveNewDatabase(password)
     if (pathOfNewDB) {
-      paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : null; // null = item already exists
+      paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log('item already exists'); // 'null' = item already exists
       form.reset()
       // setIsDatabaseOpened(true) <- maybe TODO - right now the database is immediately encrypted on create so it cannot return a nice JSON, but it works pretty well now
       // (note: user creates db, db is encrypted, user has to open db to start.)
@@ -112,7 +112,7 @@ export default function Home() {
                   setRefreshKey(oldKey => oldKey + 1)
                   return check
                 }
-                paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : null; // null = item already exists
+                paths.indexOf(String(selected)) === -1 ? paths.push(String(selected)) : console.log('item already exists'); // 'null' = item already exists
               }}>
                 Open
               </Button>
@@ -162,6 +162,7 @@ export default function Home() {
               } else {
                 localStorage.setItem('isDbOpened', 'true')
                 localStorage.setItem('dbContent', check)
+                setRefreshKey(oldKey => oldKey + 1)
                 return check
               }
             }}>
