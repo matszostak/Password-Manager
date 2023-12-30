@@ -13,23 +13,23 @@ import { BrowserRouter } from 'react-router-dom';
 import { Notifications } from '@mantine/notifications';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+	document.getElementById('root') as HTMLElement
 );
 
 const theme = createTheme({
-  fontFamily: 'Open Sans, sans-serif',
-  primaryColor: 'indigo',
+	fontFamily: 'Open Sans, sans-serif',
+	primaryColor: 'indigo',
 });
 localStorage.getItem('isDbOpened')
 root.render(
-    <MantineProvider defaultColorScheme='dark' theme={theme}>
-      <ModalsProvider>
-        <BrowserRouter>
-          <Notifications />
-          <App />
-        </BrowserRouter>
-      </ModalsProvider>
-    </MantineProvider>
+	<MantineProvider defaultColorScheme='dark' theme={theme}>
+		<ModalsProvider>
+			<BrowserRouter>
+				<Notifications />
+				<App />
+			</BrowserRouter>
+		</ModalsProvider>
+	</MantineProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
