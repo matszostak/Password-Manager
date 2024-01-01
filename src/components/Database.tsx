@@ -118,8 +118,13 @@ export default function Database({ parentState, setParentState }: { parentState:
     }
 
     const handlePasswordSettingFunction = (passwordFromTheGenerator: string) => {
-        setGeneratedPassword(passwordFromTheGenerator)
-        setCurrentPassword(passwordFromTheGenerator)
+        if (!(passwordFromTheGenerator === 'Any box has to be checked and the password cannot use just spaces.')) {
+            setGeneratedPassword(passwordFromTheGenerator)
+            setCurrentPassword(passwordFromTheGenerator)
+        } else {
+            // TODO: add something or not, does not matter.
+        }
+        
     }
 
     const setSorting = (field: keyof RowData) => {

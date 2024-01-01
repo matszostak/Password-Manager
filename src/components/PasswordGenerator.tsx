@@ -1,7 +1,6 @@
 import { Button, Checkbox, SegmentedControl, Slider, Space } from '@mantine/core'
-import { invoke } from '@tauri-apps/api';
 import { useState } from 'react';
-import { generateDefault, generatePassphrase, generatePassword } from '../utils/passwordGeneration'
+import { generatePassphrase, generatePassword } from '../utils/passwordGeneration'
 import { randomId, useListState } from '@mantine/hooks';
 import { MAX_PASSPHRASE_LENGTH, MAX_PASSWORD_LENGTH, MIN_PASSPHRASE_LENGTH, MIN_PASSWORD_LENGTH, marksPassphrase, marksPassword } from '../utils/constants';
 
@@ -33,7 +32,6 @@ export default function PasswordGenerator(props: any) {
         />
     ));
 
-    
     async function generatePasswordInterface(
         length: number,
         nums: boolean,
@@ -45,6 +43,7 @@ export default function PasswordGenerator(props: any) {
         strict: boolean
     ) {
         // TODO: handle error when the user unchecks every box
+
         let x: any = await generatePassword(length, nums, lower, upper, symbols, spaces, similar, strict)
         setGeneratedPassword(String(x))
         if(props.handlePasswordSetting) {
@@ -82,7 +81,13 @@ export default function PasswordGenerator(props: any) {
                     <Button onClick={() =>
                         generatePassphraseInterface(passphraseLength, usePassphraseNumbers, '_')
                     }>Generate!</Button>
-                    <h4>{generatedPassword}</h4>
+                    {
+                        (props.handlePasswordSetting !== undefined) ? (
+                            <></>
+                        ) : (
+                            <h4>{generatedPassword}</h4>
+                        )
+                    }
                 </>
             )
         } else {
@@ -102,18 +107,37 @@ export default function PasswordGenerator(props: any) {
                     {items}
                     <Space h={10} />
                     <Button onClick={() =>
-                        generatePasswordInterface(
-                            passwordLength,
-                            values[0].checked,
-                            values[1].checked,
-                            values[2].checked,
-                            values[3].checked,
-                            values[4].checked,
-                            values[5].checked,
-                            true
-                        )
+                        {
+                            let isAnyBoxChecked = false
+                            for (let i = 0; i < 4; i++) { 
+                                if (values[i].checked === true) {
+                                    isAnyBoxChecked = true;
+                                    break
+                                }
+                            }
+                            if (isAnyBoxChecked) {
+                                generatePasswordInterface(
+                                    passwordLength,
+                                    values[0].checked,
+                                    values[1].checked,
+                                    values[2].checked,
+                                    values[3].checked,
+                                    values[4].checked,
+                                    values[5].checked,
+                                    true
+                                )
+                            } else {
+                                setGeneratedPassword('Any box has to be checked and the password cannot use just spaces.')
+                            }
+                        } 
                     }>Generate!</Button>
-                    <h4>{generatedPassword}</h4>
+                   {
+                        (props.handlePasswordSetting !== undefined) ? (
+                            <></>
+                        ) : (
+                            <h4>{generatedPassword}</h4>
+                        )
+                    }
                 </>
             )
         }
