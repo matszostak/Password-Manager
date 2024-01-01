@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { encryptDatabase } from "../utils/fileOperations"
 import { notifications } from "@mantine/notifications"
 
+import classes from '../css/Database.module.css';
 interface ThProps {
     children: React.ReactNode;
     reversed: boolean;
@@ -82,7 +83,6 @@ export default function Database({ parentState, setParentState }: { parentState:
     let parsedContent = JSON.parse(String(localStorage.getItem('dbContent')))
     let [parsedContentState, setParsedContentState] = useState(parsedContent)
     let name: string = parsedContentState.vaultName // database name from JSON
-    let dbVault = parsedContentState.vault
     const [search, setSearch] = useState('');
     const [sortedData, setSortedData] = useState(parsedContentState.vault);
     const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
@@ -124,7 +124,6 @@ export default function Database({ parentState, setParentState }: { parentState:
         } else {
             // TODO: add something or not, does not matter.
         }
-        
     }
 
     const setSorting = (field: keyof RowData) => {
@@ -140,10 +139,21 @@ export default function Database({ parentState, setParentState }: { parentState:
         setSortedData(sortData(JSON.parse(JSON.stringify(parsedContentState.vault)), { sortBy, reversed: reverseSortDirection, search: value }));
     };
 
+    function panel(row: any){
+        return (
+            <Box>
+                <Paper shadow="xl" withBorder p="sm" onClick={() => console.log('copy now')} className={classes.control}>{row.username}</Paper>
+                <Space w={10} />
+                <Paper shadow="xl" withBorder p="sm"  className={classes.control}>{row.urls}</Paper>
+                <Space w={10} />
+                <Paper shadow="xl" withBorder p="sm"  className={classes.control}>{row.notes}</Paper>
+                <Space w={10} />
+            </Box>
+        )
+    }
     let rows = sortedData.map((row: any, index: number) => (
         <>
             <Table.Tr key={row.name}>
-
                 <Accordion.Item
                     key={row.name}
                     value={row.username}
@@ -178,7 +188,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                             </ActionIcon>
                         </Tooltip>
                     </Center>
-                    <Accordion.Panel>{row.username + ' ' + row.password + ' ' + row.urls}</Accordion.Panel>
+                    <Accordion.Panel>{panel(row)}</Accordion.Panel>
                 </Accordion.Item>
             </Table.Tr>
         </>
