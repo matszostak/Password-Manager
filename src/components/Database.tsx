@@ -476,6 +476,5 @@ export default function Database({ parentState, setParentState }: { parentState:
                 </Accordion>
             </ScrollArea>
         </>
-        // TODO: handle change and saving the database here
     );
 }

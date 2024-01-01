@@ -21,7 +21,6 @@ export default function PasswordGenerator(props: any) {
         { label: 'Use similar letters (e.g. l and I)', checked: true, key: randomId() }, // TODO: maybe add strict checkbox
     ];
     const [values, handlers] = useListState(initialValues);
-    let checker = (arr: any[]) => arr.every(v => v === false);
 
     const items = values.map((value, index) => (
         <Checkbox
@@ -48,12 +47,16 @@ export default function PasswordGenerator(props: any) {
         // TODO: handle error when the user unchecks every box
         let x: any = await generatePassword(length, nums, lower, upper, symbols, spaces, similar, strict)
         setGeneratedPassword(String(x))
-        props.handlePasswordSetting(String(x))
+        if(props.handlePasswordSetting) {
+            props.handlePasswordSetting(String(x))
+        }
     }
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
         let x: any = await generatePassphrase(length, numbers, specialCharacter)
         setGeneratedPassword(String(x))
-        props.handlePasswordSetting(String(x))
+        if(props.handlePasswordSetting) {
+            props.handlePasswordSetting(String(x))
+        }
     }
     function helper() {
         if (wordOrPhrase === 'passphrase') {

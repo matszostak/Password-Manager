@@ -60,7 +60,6 @@ export default function Home() {
 			paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log('item already exists'); // 'null' = item already exists
 			setValue('')
 			setConfirmValue('')
-			// setIsDatabaseOpened(true) <- maybe TODO - right now the database is immediately encrypted on create so it cannot return a nice JSON, but it works pretty well now
 			// (note: user creates db, db is encrypted, user has to open db to start.)
 			notifications.show({
 				message: 'Database was created. Open it using Your password!',
