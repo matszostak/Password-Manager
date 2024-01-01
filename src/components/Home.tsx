@@ -220,27 +220,30 @@ export default function Home() {
 			<Space h={60} />
 			{(localStorage.getItem('isDbOpened') === 'false') ? (
 				<>
-					<Modal opened={opened} onClose={close} title="Create new password database" size="md">
+					<Modal opened={opened} onClose={() => {
+							setPopoverOpened(false)
+							close()
+						}}
+						title="Create new password database" size="md"
+					>
 						<Box maw={340} mx="auto">
-							<Popover opened={popoverOpened} position="bottom" width="target" transitionProps={{ transition: 'pop' }}>
+							<Popover opened={popoverOpened} position="bottom" width={340} transitionProps={{ transition: 'pop' }}>
 								<Popover.Target>
-									<div
-										onFocusCapture={() => setPopoverOpened(true)}
-										onBlurCapture={() => setPopoverOpened(false)}
-									>
 										<PasswordInput
 											withAsterisk
 											label="Password"
 											placeholder="Password"
 											value={value}
 											onChange={(event) => setValue(event.currentTarget.value)}
+											onFocusCapture={() => setPopoverOpened(true)}
+											onBlurCapture={() => setPopoverOpened(false)}
 										/>
-									</div>
 								</Popover.Target>
 								<Popover.Dropdown>
 									<Progress color={color} value={strength} size={5} mb="xs" />
 									<PasswordRequirement label="Includes at least 16 characters" meets={value.length > 15} />
 									{checks}
+									<Text size="xs" mt={10} mb={-5} c="dimmed">Strong password is recommended, but not required</Text>
 								</Popover.Dropdown>
 							</Popover>
 							<PasswordInput
