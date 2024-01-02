@@ -24,8 +24,10 @@ pub fn create_new_database(path: String, password: String) {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
         let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
-        let iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
+        let mut iv: [u8; 16] = [0; 16];
+        rng.fill_bytes(&mut iv);
         let mut salt_and_iv: Vec<u8> = [&salt[..], &iv].concat();
+        println!("{:?}", salt_and_iv);
         let mut encrypted: Vec<u8> = encrypt(pretty.as_bytes(), &key, &iv).unwrap();
         salt_and_iv.append(&mut encrypted);
         fs::write(&path, &salt_and_iv).unwrap();
@@ -70,7 +72,8 @@ pub fn encrypt_database(
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
-    let iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
+    let mut iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
+    rng.fill_bytes(&mut iv);
     println!("Salt: {} | IV: {} | Password: {} | Key: {}", hex::encode(salt), hex::encode(iv), hex::encode(password), hex::encode(key));
 
     let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");

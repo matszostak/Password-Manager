@@ -91,7 +91,6 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [opened, { open, close }] = useDisclosure(false);
     const [renameDrawer, renameDrawerHandler] = useDisclosure(false);
     const [collapse, collapseHandlers] = useDisclosure(false);
-    const [generatedPassword, setGeneratedPassword] = useState<string | null>('')
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [visible, { toggle }] = useDisclosure(false);
     const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
@@ -119,7 +118,6 @@ export default function Database({ parentState, setParentState }: { parentState:
 
     const handlePasswordSettingFunction = (passwordFromTheGenerator: string) => {
         if (!(passwordFromTheGenerator === 'Any box has to be checked and the password cannot use just spaces.')) {
-            setGeneratedPassword(passwordFromTheGenerator)
             setCurrentPassword(passwordFromTheGenerator)
         } else {
             // TODO: add something or not, does not matter.
@@ -360,12 +358,8 @@ export default function Database({ parentState, setParentState }: { parentState:
 
     async function generatePassphraseInterface(length: number, numbers: boolean, specialCharacter: string) {
         let x: any = await generatePassphrase(length, numbers, specialCharacter)
-        setGeneratedPassword(String(x))
         setCurrentPassword(String(x))
     }
-
-
-
 
     return (
         <>
