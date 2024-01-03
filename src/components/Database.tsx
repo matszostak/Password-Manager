@@ -160,13 +160,13 @@ export default function Database({ parentState, setParentState }: { parentState:
                     <Center>
                         <Accordion.Control>
                             <Group wrap="nowrap">
-                                <div>
+                                <Box>
                                     <Text>{row.name}</Text>
                                     <Text size="sm" c="dimmed" fw={400}>
                                         {row.urls}
                                     </Text>
 
-                                </div>
+                                </Box>
                             </Group>
                         </Accordion.Control>
                         <Tooltip label="Edit entry">
@@ -371,6 +371,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         () => {
                             localStorage.setItem('isDbOpened', 'false')
                             localStorage.setItem('dbContent', '')
+                            localStorage.setItem('password', '')
                             setParentState(!parentState);
                         }}
                 >Close database</Button>
@@ -388,7 +389,9 @@ export default function Database({ parentState, setParentState }: { parentState:
                     onClick={
                         () => {
                             localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
-                            encryptDatabase(String(localStorage.getItem('openedPath')), 'aaaa').then(value => {
+                            let x: string = String(localStorage.getItem('password'))
+                            console.log(x)
+                            encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => { // TODO HERE LOL
                                 if (String(value) === 'encrypted') {
                                     notifications.show({
                                         message: `Database saved successfully to: ${localStorage.getItem('openedPath')}`,

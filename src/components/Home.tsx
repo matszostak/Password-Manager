@@ -119,6 +119,7 @@ export default function Home() {
 								} else {
 									localStorage.setItem('isDbOpened', 'true')
 									localStorage.setItem('dbContent', check)
+									localStorage.setItem('password', btoa(openpass))
 									setRefreshKey(oldKey => oldKey + 1)
 									return check
 								}
@@ -172,6 +173,7 @@ export default function Home() {
 							} else {
 								localStorage.setItem('isDbOpened', 'true')
 								localStorage.setItem('dbContent', check)
+								localStorage.setItem('password', btoa(openpass))
 								setRefreshKey(oldKey => oldKey + 1)
 								return check
 							}

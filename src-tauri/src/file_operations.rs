@@ -15,10 +15,7 @@ pub fn create_new_database(path: String, password: String) {
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
-
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
-
-    // TODO: encrypt file with password and basically handle key creation
     let template_path = Path::new("resources\\db_template.json");
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
@@ -39,7 +36,6 @@ pub fn create_new_database(path: String, password: String) {
 
 #[tauri::command]
 pub fn decrypt_database(path: String, password: String) -> String {
-    // TODO: finish decryption
     if !Path::new(&path).exists() {
         return "Path does not exist".to_string();
     }
@@ -72,7 +68,7 @@ pub fn encrypt_database(
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
-    let mut iv: [u8; 16] = [0; 16]; // TODO: generate IV!!!
+    let mut iv: [u8; 16] = [0; 16];
     rng.fill_bytes(&mut iv);
     println!("Salt: {} | IV: {} | Password: {} | Key: {}", hex::encode(salt), hex::encode(iv), hex::encode(password), hex::encode(key));
 
