@@ -174,6 +174,7 @@ export default function Home() {
 								localStorage.setItem('isDbOpened', 'true')
 								localStorage.setItem('dbContent', check)
 								localStorage.setItem('password', btoa(openpass))
+								localStorage.setItem('openedPath', exactPath)
 								setRefreshKey(oldKey => oldKey + 1)
 								return check
 							}
