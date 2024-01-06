@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, Grid, Container } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
@@ -175,7 +175,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                                     <Text size="sm" c="dimmed" fw={400}>
                                         {row.urls}
                                     </Text>
-
                                 </Box>
                             </Group>
                         </Accordion.Control>
@@ -401,7 +400,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                             localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
                             let x: string = String(localStorage.getItem('password'))
                             console.log(x)
-                            encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => { // TODO HERE LOL
+                            encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => {
                                 if (String(value) === 'encrypted') {
                                     notifications.show({
                                         message: `Database saved successfully to: ${localStorage.getItem('openedPath')}`,
