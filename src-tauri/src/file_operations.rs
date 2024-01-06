@@ -2,6 +2,7 @@ use rand::rngs::StdRng;
 use rand::RngCore;
 use rand::SeedableRng;
 use serde_json;
+use serde_json::json;
 use std::process;
 use std::{fs, path::Path, str};
 
@@ -10,7 +11,7 @@ use super::aes_encryption::encrypt;
 use super::key_derivation::generate_key_from_password_argon2;
 
 #[tauri::command]
-pub fn create_new_database(path: String, password: String) {
+pub fn create_new_database(path: String, password: String, name: String) {
     let mut source_rng = rand::thread_rng();
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
@@ -20,7 +21,12 @@ pub fn create_new_database(path: String, password: String) {
     let template_path = Path::new("resources\\db_template.json");
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
-        let res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
+        let mut res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
+        if let Some(obj) = res.as_object_mut() {
+            if let Some(value) = obj.get_mut("vaultName") {
+                *value = json!(name);
+            }
+        }
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
         let mut iv: [u8; 16] = [0; 16];
         rng.fill_bytes(&mut iv);

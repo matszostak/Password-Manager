@@ -2,7 +2,7 @@ import { save, open as open_tauri } from '@tauri-apps/api/dialog'
 import { invoke } from "@tauri-apps/api/tauri"
 import { fileExtensionWithDot, fileExtensionWithoutDot } from './constants';
 
-export async function saveNewDatabase(password: string) {
+export async function saveNewDatabase(newDatabaseName: string, password: string) {
     const filePath = await save({
         filters: [{
             name: fileExtensionWithDot,
@@ -10,7 +10,7 @@ export async function saveNewDatabase(password: string) {
         }]
     })
     if (filePath) {
-        await invoke("create_new_database", { path: filePath, password: password })
+        await invoke("create_new_database", { path: filePath, password: password, name: newDatabaseName })
         return filePath
     }
     else {

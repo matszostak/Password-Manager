@@ -1,4 +1,4 @@
-import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, Popover, Progress } from "@mantine/core";
+import { Button, Center, Group, Text, Modal, PasswordInput, Space, Title, Box, Flex, Popover, Progress, TextInput } from "@mantine/core";
 import { useDisclosure, useInputState } from "@mantine/hooks";
 import { openExistingDatabase, saveNewDatabase } from "../utils/fileOperations";
 import { useEffect, useState } from "react";
@@ -21,13 +21,14 @@ export default function Home() {
 	const [paths] = useState<string[]>([])
 	// TODO: Save it to lacalStorage or something to get persistence
 	//const [dbContent, setDbContent] = useState('')
-	const [_refreshKey, setRefreshKey] = useState(0);
-	const [parentState, setParentState] = useState(false);
+	const [_refreshKey, setRefreshKey] = useState(0)
+	const [parentState, setParentState] = useState(false)
 
-	const [popoverOpened, setPopoverOpened] = useState(false);
-	const [value, setValue] = useState('');
-	const [confirmValue, setConfirmValue] = useState('');
-	const [isPasswordMatching, setIsPasswordMatching] = useState(true);
+	const [popoverOpened, setPopoverOpened] = useState(false)
+	const [value, setValue] = useState('')
+	const [databaseName, setDatabaseName] = useState('')
+	const [confirmValue, setConfirmValue] = useState('')
+	const [isPasswordMatching, setIsPasswordMatching] = useState(true)
 	const checks = requirements.map((requirement, index) => (
 		<PasswordRequirement key={index} label={requirement.label} meets={requirement.re.test(value)} />
 	));
@@ -55,11 +56,12 @@ export default function Home() {
 	})
 
 	const createDatabase = async () => {
-		let pathOfNewDB: string | null = await saveNewDatabase(value)
+		let pathOfNewDB: string | null = await saveNewDatabase(databaseName, value)
 		if (pathOfNewDB) {
 			paths.indexOf(String(pathOfNewDB)) === -1 ? paths.push(String(pathOfNewDB)) : console.log('item already exists'); // 'null' = item already exists
 			setValue('')
 			setConfirmValue('')
+			setDatabaseName('')
 			// (note: user creates db, db is encrypted, user has to open db to start.)
 			notifications.show({
 				message: 'Database was created. Open it using Your password!',
@@ -79,6 +81,7 @@ export default function Home() {
 			})
 			setValue('')
 			setConfirmValue('')
+			setDatabaseName('')
 		}
 	}
 
@@ -223,23 +226,30 @@ export default function Home() {
 			{(localStorage.getItem('isDbOpened') === 'false') ? (
 				<>
 					<Modal opened={opened} onClose={() => {
-							setPopoverOpened(false)
-							close()
-						}}
+						setPopoverOpened(false)
+						close()
+					}}
 						title="Create new password database" size="md"
 					>
 						<Box maw={340} mx="auto">
+							<TextInput
+								withAsterisk
+								label="Database Name"
+								placeholder="Database Name"
+								value={databaseName}
+								onChange={(event) => setDatabaseName(event.currentTarget.value)}
+							/>
 							<Popover opened={popoverOpened} position="bottom" width={340} transitionProps={{ transition: 'pop' }}>
 								<Popover.Target>
-										<PasswordInput
-											withAsterisk
-											label="Password"
-											placeholder="Password"
-											value={value}
-											onChange={(event) => setValue(event.currentTarget.value)}
-											onFocusCapture={() => setPopoverOpened(true)}
-											onBlurCapture={() => setPopoverOpened(false)}
-										/>
+									<PasswordInput
+										withAsterisk
+										label="Password"
+										placeholder="Password"
+										value={value}
+										onChange={(event) => setValue(event.currentTarget.value)}
+										onFocusCapture={() => setPopoverOpened(true)}
+										onBlurCapture={() => setPopoverOpened(false)}
+									/>
 								</Popover.Target>
 								<Popover.Dropdown>
 									<Progress color={color} value={strength} size={5} mb="xs" />
@@ -262,16 +272,18 @@ export default function Home() {
 							/>
 							<Group mt="md">
 								<Button
+									color="green"
 									onClick={() => {
 										setRefreshKey(oldKey => oldKey + 1)
 										createDatabase()
 										setValue('')
+										setDatabaseName('')
 										setConfirmValue('')
 										close()
 										setRefreshKey(oldKey => oldKey + 1)
 									}}
 								>
-									Submit
+									Create
 								</Button>
 							</Group>
 						</Box>
