@@ -15,6 +15,7 @@ pub fn create_new_database(path: String, password: String) {
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
+    println!("{}", password);
     let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
     let template_path = Path::new("resources\\db_template.json");
     if template_path.exists() {

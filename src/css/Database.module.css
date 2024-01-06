@@ -1,5 +1,11 @@
 .control:hover {
     filter: brightness(85%);
     color: var(--mantine-color-indigo-4);
-    transition: 0.3s;
+    transition: 0.2s;
+}
+
+.inner:hover {
+    filter: brightness(85%);
+    color: var(--mantine-color-indigo-4);
+    transition: 0.2s;
 }

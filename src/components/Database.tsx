@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, Grid, Container } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
@@ -93,6 +93,7 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [visible, { toggle }] = useDisclosure(false);
+    const [visibleInPaper, toggleVisibleInPaper] = useDisclosure(false);
     const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
 
     // Used to edit stuff, probably will be used to add new stuff
@@ -137,14 +138,23 @@ export default function Database({ parentState, setParentState }: { parentState:
         setSortedData(sortData(JSON.parse(JSON.stringify(parsedContentState.vault)), { sortBy, reversed: reverseSortDirection, search: value }));
     };
 
-    function panel(row: any){
+    function panel(row: any) {
         return (
             <Box>
                 <Paper shadow="xl" withBorder p="sm" onClick={() => console.log('copy now')} className={classes.control}>{row.username}</Paper>
                 <Space w={10} />
-                <Paper shadow="xl" withBorder p="sm"  className={classes.control}>{row.urls}</Paper>
+                <Paper shadow="xl" withBorder p="sm" className={classes.control}>
+                    <PasswordInput my={-6}
+                        classNames={{ innerInput: classes.inner }}
+                        variant="unstyled"
+                        value={row.password}
+                        c={"indigo"}
+                    />
+                </Paper>
                 <Space w={10} />
-                <Paper shadow="xl" withBorder p="sm"  className={classes.control}>{row.notes}</Paper>
+                <Paper shadow="xl" withBorder p="sm" className={classes.control}>{row.urls}</Paper>
+                <Space w={10} />
+                <Paper shadow="xl" withBorder p="sm" h={'auto'} className={classes.control}>{row.notes}</Paper>
                 <Space w={10} />
             </Box>
         )
@@ -409,7 +419,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                                         autoClose: 3600,
                                     })
                                 }
-                            }) // TODO: get the password from when the users decrypts the database
+                            })
                         }}
                     color={"green"}
                 >Save database</Button>
@@ -464,7 +474,6 @@ export default function Database({ parentState, setParentState }: { parentState:
                                     <Table.Td colSpan={3}>
                                         <Text fw={500} ta="center">
                                             No passwords found.
-
                                         </Text>
                                         <Space h={10} />
                                         <Center>
