@@ -1,6 +1,6 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, SimpleGrid } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
+import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLock, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
@@ -93,7 +93,6 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [collapse, collapseHandlers] = useDisclosure(false);
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [visible, { toggle }] = useDisclosure(false);
-    const [visibleInPaper, toggleVisibleInPaper] = useDisclosure(false);
     const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
 
     // Used to edit stuff, probably will be used to add new stuff
@@ -142,20 +141,19 @@ export default function Database({ parentState, setParentState }: { parentState:
         return (
             <Box>
                 <Paper shadow="xl" withBorder p="sm" onClick={() => console.log('copy now')} className={classes.control}>{row.username}</Paper>
-                <Space w={10} />
                 <Paper shadow="xl" withBorder p="sm" className={classes.control}>
-                    <PasswordInput my={-6}
+                    <PasswordInput
+                        my={-6}
                         classNames={{ innerInput: classes.inner }}
                         variant="unstyled"
                         value={row.password}
                         c={"indigo"}
+                        leftSection={<IconLock size="1rem" stroke={1.5}/>}
+                        label={"Password"}
                     />
                 </Paper>
-                <Space w={10} />
                 <Paper shadow="xl" withBorder p="sm" className={classes.control}>{row.urls}</Paper>
-                <Space w={10} />
                 <Paper shadow="xl" withBorder p="sm" h={'auto'} className={classes.control}>{row.notes}</Paper>
-                <Space w={10} />
             </Box>
         )
     }
