@@ -42,7 +42,10 @@
       "category": "DeveloperTool",
       "copyright": "",
       "deb": {
-        "depends": []
+        "depends": [],
+        "files": {
+          "usr/share/resources": "../resources/"
+        }
       },
       "externalBin": [],
       "icon": [

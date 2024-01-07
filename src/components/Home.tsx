@@ -13,6 +13,7 @@ import * as Constants from '../utils/constants'
 import { BaseDirectory, readTextFile } from "@tauri-apps/api/fs";
 import Database from "./Database";
 import { requirements, PasswordRequirement, getStrength } from "../utils/passwordStrength";
+import { sep } from "@tauri-apps/api/path";
 
 export default function Home() {
 	const [opened, { open, close }] = useDisclosure(false); // Modal stuff
@@ -148,7 +149,7 @@ export default function Home() {
 
 	const openDatabaseWithExactPath = async (exactPath: string) => {
 		let openpass: string = ''
-		let tempArr: string[] = exactPath.split('\\')
+		let tempArr: string[] = exactPath.split(sep)
 		let dbName = tempArr.at(-1)
 		modals.open({
 			title: `Opening database ${dbName}`,
