@@ -9,15 +9,24 @@ use std::{fs, path::Path, str};
 use super::aes_encryption::decrypt;
 use super::aes_encryption::encrypt;
 use super::key_derivation::generate_key_from_password_argon2;
+use super::key_derivation::generate_key_from_password_pbkdf;
 
 #[tauri::command]
-pub fn create_new_database(path: String, password: String, name: String) {
+pub fn create_new_database(path: String, password: String, name: String, kdf_algo: bool) {
+    println!("{}", kdf_algo);
     let mut source_rng = rand::thread_rng();
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
     println!("{}", password);
-    let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+    let key: [u8; 32];
+    if kdf_algo {
+        key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+        println!("Argon");
+    } else {
+        key = generate_key_from_password_pbkdf(password.as_bytes(), &salt).unwrap();
+    }
+    
     let template_path = Path::new("resources\\db_template.json");
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
@@ -42,7 +51,7 @@ pub fn create_new_database(path: String, password: String, name: String) {
 }
 
 #[tauri::command]
-pub fn decrypt_database(path: String, password: String) -> String {
+pub fn decrypt_database(path: String, password: String, kdf_algo: bool) -> String {
     if !Path::new(&path).exists() {
         return "Path does not exist".to_string();
     }
@@ -51,7 +60,12 @@ pub fn decrypt_database(path: String, password: String) -> String {
     let iv = &file_contents[16..32];
     let data = &file_contents[32..];
 
-    let key = generate_key_from_password_argon2(password.as_bytes(), salt);
+    let mut key: [u8; 32] = [0u8; 32];
+    if kdf_algo {
+        key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+    } else {
+        key = generate_key_from_password_pbkdf(password.as_bytes(), &salt).unwrap();
+    }
 
     let decrypted_result = decrypt(data, &key, iv);
     if decrypted_result.is_ok() {
@@ -69,12 +83,20 @@ pub fn encrypt_database(
     path: String,
     password: String, /* password will be stored somewhere when DB is successfully decrypted */
     data: String,
+    kdf_algo: bool
 ) -> String {
     let mut source_rng = rand::thread_rng();
     let mut rng: StdRng = SeedableRng::from_rng(&mut source_rng).unwrap();
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
-    let key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+
+    let mut key: [u8; 32] = [0u8; 32];
+    if kdf_algo {
+        key = generate_key_from_password_argon2(password.as_bytes(), &salt);
+    } else {
+        key = generate_key_from_password_pbkdf(password.as_bytes(), &salt).unwrap();
+    }
+
     let mut iv: [u8; 16] = [0; 16];
     rng.fill_bytes(&mut iv);
     println!("Salt: {} | IV: {} | Password: {} | Key: {}", hex::encode(salt), hex::encode(iv), hex::encode(password), hex::encode(key));

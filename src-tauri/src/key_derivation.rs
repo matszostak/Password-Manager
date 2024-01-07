@@ -5,7 +5,7 @@ use argon2::Argon2;
 
 #[allow(dead_code)] // TODO: maybe user wants to choose method
 pub fn generate_key_from_password_pbkdf(password: &[u8], salt: &[u8]) -> Result<[u8; 32], String> {
-    let rounds = 100_000; //change to more later or just stop using pbkdf2
+    let rounds = 600_000; //change to more later or just stop using pbkdf2
     let mut key = [0_u8; 32];
 
     let res = pbkdf2::pbkdf2::<hmac::Hmac<Sha256>>(

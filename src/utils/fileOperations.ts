@@ -10,7 +10,7 @@ export async function saveNewDatabase(newDatabaseName: string, password: string)
         }]
     })
     if (filePath) {
-        await invoke("create_new_database", { path: filePath, password: password, name: newDatabaseName })
+        await invoke("create_new_database", { path: filePath, password: password, name: newDatabaseName, kdfAlgo: true })
         return filePath
     }
     else {
@@ -21,7 +21,7 @@ export async function saveNewDatabase(newDatabaseName: string, password: string)
 }
 
 export async function openExistingDatabase(password: string, selected: string) {
-    const database_content = await invoke('decrypt_database', { path: selected, password: password })
+    const database_content = await invoke('decrypt_database', { path: selected, password: password, kdfAlgo: true })
     if (database_content === "Path does not exist") {
         return "Database does not exist."
     }
@@ -33,7 +33,7 @@ export async function openExistingDatabase(password: string, selected: string) {
 }
 
 export async function encryptDatabase(pathIn: string, passwordIn: string) {
-    const status = await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: atob(String(localStorage.getItem('dbContent')))})
+    const status = await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: atob(String(localStorage.getItem('dbContent'))), kdfAlgo: true })
     if (status === 'encrypted') {
         return status
     } else {

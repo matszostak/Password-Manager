@@ -6,14 +6,16 @@
     caret-color: transparent;
 }
 
-.inner:hover {
+.input:hover {
     filter: brightness(85%);
     color: var(--mantine-color-indigo-4);
     transition: 0.2s;
     cursor: pointer;
     caret-color: transparent; 
+    overflow: auto;
 }
 
-.inner {
+.input {
     caret-color: transparent; 
+    overflow: auto;
 }
