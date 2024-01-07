@@ -20,7 +20,7 @@ const theme = createTheme({
 	fontFamily: 'Open Sans, sans-serif',
 	primaryColor: 'indigo',
 });
-localStorage.getItem('isDbOpened')
+
 root.render(
 	<MantineProvider defaultColorScheme='dark' theme={theme}>
 		<ModalsProvider>

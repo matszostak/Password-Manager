@@ -80,7 +80,7 @@ function sortData(
 }
 
 export default function Database({ parentState, setParentState }: { parentState: boolean, setParentState: React.Dispatch<React.SetStateAction<boolean>> }) {
-    let parsedContent = JSON.parse(String(localStorage.getItem('dbContent')))
+    let parsedContent = JSON.parse(atob(String(localStorage.getItem('dbContent'))))
     let [parsedContentState, setParsedContentState] = useState(parsedContent)
     let name: string = parsedContentState.vaultName // database name from JSON
     const [search, setSearch] = useState('');
@@ -397,7 +397,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                 <Button
                     onClick={
                         () => {
-                            localStorage.setItem('dbContent', JSON.stringify(parsedContentState))
+                            localStorage.setItem('dbContent', btoa(JSON.stringify(parsedContentState)))
                             let x: string = String(localStorage.getItem('password'))
                             console.log(x)
                             encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => {
