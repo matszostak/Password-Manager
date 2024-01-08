@@ -1,6 +1,6 @@
 import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, SimpleGrid, Grid, Stack, Fieldset } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLock, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
+import { IconBrowser, IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLink, IconLock, IconNote, IconRefresh, IconSearch, IconSelector, IconSettings, IconUser, IconWorld, IconX } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
@@ -151,19 +151,52 @@ export default function Database({ parentState, setParentState }: { parentState:
     function panel(row: any) {
         return (
 
-            <Fieldset variant="unstyled" >
-                <TextInput classNames={{ input: classes.input}} pointer={false} value={row.username} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <PasswordInput mt={"xs"} classNames={{ innerInput: classes.input }} value={row.password} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <TextInput mt={"xs"} classNames={{ input: classes.input}} value={row.urls} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <Textarea
-                    mt={"xs"} 
-                    autosize
-                    minRows={2}
-                    value={row.notes}
-                    classNames={{ input: classes.input}}
-                    leftSection={<IconLock size="1rem" stroke={1.5}/>}
-                />
-            </Fieldset>
+            <Box>
+                <Paper shadow="xs" p={5} className={classes.input}>
+                    <TextInput
+                        variant="unstyled"
+                        label={<Text c="dimmed" size="sm" ml={10}>Username</Text>}
+                        spellCheck={false}
+                        classNames={{ input: classes.input }}
+                        pointer={false} value={row.username}
+                        leftSection={<IconUser size="1rem" stroke={1.5} />}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <PasswordInput
+                        variant="unstyled"
+                        spellCheck={false} mt={"xs"}
+                        classNames={{ innerInput: classes.input, input: classes.input }}
+                        value={row.password} 
+                        leftSection={<IconLock size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>Password</Text>}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <TextInput
+                        variant="unstyled"
+                        spellCheck={false}
+                        mt={"xs"}
+                        classNames={{ input: classes.input }}
+                        value={row.urls}
+                        leftSection={<IconWorld size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>URL</Text>}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <Textarea
+                        variant="unstyled"
+                        spellCheck={false}
+                        mt={"xs"}
+                        autosize
+                        minRows={2}
+                        value={row.notes}
+                        classNames={{ input: classes.input }}
+                        leftSection={<IconNote size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>Notes</Text>}
+                    />
+                </Paper>
+            </Box>
         )
     }
     let rows = sortedData.map((row: any, index: number) => (
