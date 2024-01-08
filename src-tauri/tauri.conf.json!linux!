@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "yarn build",
-    "beforeDevCommand": "yarn cross-env BROWSER=none yarn start",
+    "beforeBuildCommand": "export WEBKIT_DISABLE_COMPOSITING_MODE=1; yarn build",
+    "beforeDevCommand": "export WEBKIT_DISABLE_COMPOSITING_MODE=1; yarn cross-env BROWSER=none yarn start",
     "devPath": "http://localhost:3000",
     "distDir": "../build"
   },
