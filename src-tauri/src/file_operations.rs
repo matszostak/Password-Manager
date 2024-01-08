@@ -4,7 +4,7 @@ use rand::SeedableRng;
 use serde_json;
 use serde_json::json;
 use std::process;
-use std::{fs, path::Path, str};
+use std::{fs, path::Path, str, path::MAIN_SEPARATOR_STR};
 
 use super::aes_encryption::decrypt;
 use super::aes_encryption::encrypt;
@@ -26,8 +26,8 @@ pub fn create_new_database(path: String, password: String, name: String, kdf_alg
     } else {
         key = generate_key_from_password_pbkdf(password.as_bytes(), &salt).unwrap();
     }
-    
-    let template_path = Path::new("resources\\db_template.json");
+    let complete = format!("{}{}{}", "resources", MAIN_SEPARATOR_STR, "db_template.json");
+    let template_path = Path::new(&complete);
     if template_path.exists() {
         let data: String = fs::read_to_string(template_path).expect("Unable to read file");
         let mut res: serde_json::Value = serde_json::from_str(&data).expect("Unable to parse");
@@ -60,7 +60,7 @@ pub fn decrypt_database(path: String, password: String, kdf_algo: bool) -> Strin
     let iv = &file_contents[16..32];
     let data = &file_contents[32..];
 
-    let mut key: [u8; 32] = [0u8; 32];
+    let key: [u8; 32];
     if kdf_algo {
         key = generate_key_from_password_argon2(password.as_bytes(), &salt);
     } else {
@@ -90,7 +90,7 @@ pub fn encrypt_database(
     let mut salt: [u8; 16] = [0u8; 16];
     rng.fill_bytes(&mut salt);
 
-    let mut key: [u8; 32] = [0u8; 32];
+    let key: [u8; 32];
     if kdf_algo {
         key = generate_key_from_password_argon2(password.as_bytes(), &salt);
     } else {
@@ -112,15 +112,16 @@ pub fn encrypt_database(
 
 pub fn create_useful_files() {
     let appdata_dir = tauri::api::path::data_dir().unwrap().display().to_string();
-    let combined_string = format!("{}{}", appdata_dir, "\\PasswordManager");
+    let combined_string = format!("{}{}{}", appdata_dir, MAIN_SEPARATOR_STR, "PasswordManager");
     if !Path::new(combined_string.as_str()).exists() {
         println!("PasswordManager directory does not exist... creating");
         let _ = fs::create_dir(combined_string);
     }
-    let combined_string2 = format!("{}{}", appdata_dir, "\\PasswordManager");
-    let file = format!("{}{}", combined_string2, "\\profile.json");
+    let combined_string2 = format!("{}{}{}", appdata_dir, MAIN_SEPARATOR_STR, "PasswordManager");
+    let file = format!("{}{}{}", combined_string2, MAIN_SEPARATOR_STR, "profile.json");
     if !Path::new(file.as_str()).exists() {
         println!("Config file does not exist... creating");
-        let _ = fs::copy("resources\\profile.json", file);
+        let complete = format!("{}{}{}", "resources", MAIN_SEPARATOR_STR, "profile.json");
+        let _ = fs::copy(complete, file);
     }
 }

@@ -3,6 +3,7 @@
 use passwords::PasswordGenerator;
 use rand::Rng;
 use std::{fs, collections::HashMap, time::Instant};
+use std::path::MAIN_SEPARATOR_STR;
 
 
 #[tauri::command]
@@ -54,7 +55,7 @@ lazy_static! {
     };
 }
 fn load_database() -> HashMap<i32, String> {
-    let file_path = "resources\\eff_large_wordlist.txt"; 
+    let file_path = format!("{}{}{}", "resources", MAIN_SEPARATOR_STR, "eff_large_wordlist.txt");
     let contents = fs::read_to_string(file_path).unwrap();
     let mut map = HashMap::new();
     
