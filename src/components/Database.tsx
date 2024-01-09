@@ -94,6 +94,7 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [visible, { toggle }] = useDisclosure(false);
     const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
+    const [isNameEmpty, setIsNameEmpty] = useState(false)
 
     // Used to edit stuff, probably will be used to add new stuff
     const [currentEntryIndex, setCurrentEntryIndex] = useState(-1)
@@ -107,6 +108,7 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [_refreshKey, setRefreshKey] = useState(0);
 
     function clearCurrentStuff() {
+        setIsNameEmpty(false)
         setCurrentEntryIndex(-1)
         setcurrentID('')
         setCurrentName('')
@@ -160,6 +162,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         classNames={{ input: classes.input }}
                         pointer={false} value={row.username}
                         leftSection={<IconUser size="1rem" stroke={1.5} />}
+                        onClick={() => console.log()}
                     />
                 </Paper>
                 <Paper shadow="xs" p={5} mt={5} className={classes.input}>
@@ -167,7 +170,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         variant="unstyled"
                         spellCheck={false} mt={"xs"}
                         classNames={{ innerInput: classes.input, input: classes.input }}
-                        value={row.password} 
+                        value={row.password}
                         leftSection={<IconLock size="1rem" stroke={1.5} />}
                         label={<Text c="dimmed" size="sm" ml={10}>Password</Text>}
                     />
@@ -356,35 +359,36 @@ export default function Database({ parentState, setParentState }: { parentState:
                     />
                     <Button
                         onClick={() => {
-                            //if (currentName === '') {
-                                // TODO: works but does not make sense and does not tell the user anything
-                            //} else {
-                            if (editing) {
-                                
-                                let temp = parsedContentState
-                                temp.vault[currentEntryIndex].name = currentName
-                                temp.vault[currentEntryIndex].username = currentUsername
-                                temp.vault[currentEntryIndex].password = currentPassword
-                                temp.vault[currentEntryIndex].urls = currentUrls
-                                temp.vault[currentEntryIndex].notes = currentNotes
-                                clearCurrentStuff()
-                                setParsedContentState(temp)
-                                renameDrawerHandler.close()
-                                // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
-                                close()
+                            if (currentName === '') {
+                                setIsNameEmpty(true)
                             } else {
-                                let temp = parsedContentState
-                                let urls: string[] = [currentUrls];
-                                temp.vault = [
-                                    ...temp.vault,
-                                    { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
-                                ]
-                                setParsedContentState(temp)
-                                clearCurrentStuff()
-                                close()
-                                setRefreshKey(oldKey => oldKey + 1)
-                                setSortedData(parsedContentState.vault)
-                            }//}
+                                setIsNameEmpty(false)
+                                if (editing) {
+                                    let temp = parsedContentState
+                                    temp.vault[currentEntryIndex].name = currentName
+                                    temp.vault[currentEntryIndex].username = currentUsername
+                                    temp.vault[currentEntryIndex].password = currentPassword
+                                    temp.vault[currentEntryIndex].urls = currentUrls
+                                    temp.vault[currentEntryIndex].notes = currentNotes
+                                    clearCurrentStuff()
+                                    setParsedContentState(temp)
+                                    renameDrawerHandler.close()
+                                    // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
+                                    close()
+                                } else {
+                                    let temp = parsedContentState
+                                    let urls: string[] = [currentUrls];
+                                    temp.vault = [
+                                        ...temp.vault,
+                                        { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
+                                    ]
+                                    setParsedContentState(temp)
+                                    clearCurrentStuff()
+                                    close()
+                                    setRefreshKey(oldKey => oldKey + 1)
+                                    setSortedData(parsedContentState.vault)
+                                }
+                            }
                         }}
                     >
                         Save
@@ -404,6 +408,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                     >
                         Delete
                     </Button>
+                    {isNameEmpty ? (<Text c="#fa0000">Entry name cannot be empty!</Text>) : (<></>)}
                 </Box>
             }
         </Drawer>
