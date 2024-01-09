@@ -171,7 +171,7 @@ export default function Database({ parentState, setParentState }: { parentState:
             <Table.Tr key={row.name}>
                 <Accordion.Item
                     key={row.name}
-                    value={row.username}
+                    value={row.id}
                     w={"300%"}
                 >
                     <Center>
@@ -323,7 +323,11 @@ export default function Database({ parentState, setParentState }: { parentState:
                     />
                     <Button
                         onClick={() => {
+                            //if (currentName === '') {
+                                // TODO: works but does not make sense and does not tell the user anything
+                            //} else {
                             if (editing) {
+                                
                                 let temp = parsedContentState
                                 temp.vault[currentEntryIndex].name = currentName
                                 temp.vault[currentEntryIndex].username = currentUsername
@@ -347,7 +351,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                                 close()
                                 setRefreshKey(oldKey => oldKey + 1)
                                 setSortedData(parsedContentState.vault)
-                            }
+                            }//}
                         }}
                     >
                         Save
