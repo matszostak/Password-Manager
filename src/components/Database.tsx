@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { encryptDatabase } from "../utils/fileOperations"
 import { notifications } from "@mantine/notifications"
 
-import classes from '../css/Database.module.css';
+import classes from '../css/Styles.module.css';
 interface ThProps {
     children: React.ReactNode;
     reversed: boolean;
