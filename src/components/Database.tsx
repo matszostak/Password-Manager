@@ -1,6 +1,6 @@
 import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, SimpleGrid, Grid, Stack, Fieldset } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
-import { IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLock, IconRefresh, IconSearch, IconSelector, IconSettings, IconX } from "@tabler/icons-react"
+import { IconBrowser, IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLink, IconLock, IconNote, IconRefresh, IconSearch, IconSelector, IconSettings, IconUser, IconWorld, IconX } from "@tabler/icons-react"
 import { useState } from "react"
 import { generatePassphrase } from "../utils/passwordGeneration"
 import PasswordGenerator from "./PasswordGenerator"
@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { encryptDatabase } from "../utils/fileOperations"
 import { notifications } from "@mantine/notifications"
 
-import classes from '../css/Database.module.css';
+import classes from '../css/Styles.module.css';
 interface ThProps {
     children: React.ReactNode;
     reversed: boolean;
@@ -94,6 +94,7 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [currentEntry, setCurrentEntry] = useState<any>()
     const [visible, { toggle }] = useDisclosure(false);
     const [editing, setEditing] = useState(false) // FALSE if new item, TRUE if editing
+    const [isNameEmpty, setIsNameEmpty] = useState(false)
 
     // Used to edit stuff, probably will be used to add new stuff
     const [currentEntryIndex, setCurrentEntryIndex] = useState(-1)
@@ -107,6 +108,7 @@ export default function Database({ parentState, setParentState }: { parentState:
     const [_refreshKey, setRefreshKey] = useState(0);
 
     function clearCurrentStuff() {
+        setIsNameEmpty(false)
         setCurrentEntryIndex(-1)
         setcurrentID('')
         setCurrentName('')
@@ -151,19 +153,53 @@ export default function Database({ parentState, setParentState }: { parentState:
     function panel(row: any) {
         return (
 
-            <Fieldset variant="unstyled" >
-                <TextInput classNames={{ input: classes.input}} pointer={false} value={row.username} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <PasswordInput mt={"xs"} classNames={{ innerInput: classes.input }} value={row.password} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <TextInput mt={"xs"} classNames={{ input: classes.input}} value={row.urls} leftSection={<IconLock size="1rem" stroke={1.5}/>} />
-                <Textarea
-                    mt={"xs"} 
-                    autosize
-                    minRows={2}
-                    value={row.notes}
-                    classNames={{ input: classes.input}}
-                    leftSection={<IconLock size="1rem" stroke={1.5}/>}
-                />
-            </Fieldset>
+            <Box>
+                <Paper shadow="xs" p={5} className={classes.input}>
+                    <TextInput
+                        variant="unstyled"
+                        label={<Text c="dimmed" size="sm" ml={10}>Username</Text>}
+                        spellCheck={false}
+                        classNames={{ input: classes.input }}
+                        pointer={false} value={row.username}
+                        leftSection={<IconUser size="1rem" stroke={1.5} />}
+                        onClick={() => console.log()}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <PasswordInput
+                        variant="unstyled"
+                        spellCheck={false} mt={"xs"}
+                        classNames={{ innerInput: classes.input, input: classes.input }}
+                        value={row.password}
+                        leftSection={<IconLock size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>Password</Text>}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <TextInput
+                        variant="unstyled"
+                        spellCheck={false}
+                        mt={"xs"}
+                        classNames={{ input: classes.input }}
+                        value={row.urls}
+                        leftSection={<IconWorld size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>URL</Text>}
+                    />
+                </Paper>
+                <Paper shadow="xs" p={5} mt={5} className={classes.input}>
+                    <Textarea
+                        variant="unstyled"
+                        spellCheck={false}
+                        mt={"xs"}
+                        autosize
+                        minRows={2}
+                        value={row.notes}
+                        classNames={{ input: classes.input }}
+                        leftSection={<IconNote size="1rem" stroke={1.5} />}
+                        label={<Text c="dimmed" size="sm" ml={10}>Notes</Text>}
+                    />
+                </Paper>
+            </Box>
         )
     }
     let rows = sortedData.map((row: any, index: number) => (
@@ -323,35 +359,36 @@ export default function Database({ parentState, setParentState }: { parentState:
                     />
                     <Button
                         onClick={() => {
-                            //if (currentName === '') {
-                                // TODO: works but does not make sense and does not tell the user anything
-                            //} else {
-                            if (editing) {
-                                
-                                let temp = parsedContentState
-                                temp.vault[currentEntryIndex].name = currentName
-                                temp.vault[currentEntryIndex].username = currentUsername
-                                temp.vault[currentEntryIndex].password = currentPassword
-                                temp.vault[currentEntryIndex].urls = currentUrls
-                                temp.vault[currentEntryIndex].notes = currentNotes
-                                clearCurrentStuff()
-                                setParsedContentState(temp)
-                                renameDrawerHandler.close()
-                                // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
-                                close()
+                            if (currentName === '') {
+                                setIsNameEmpty(true)
                             } else {
-                                let temp = parsedContentState
-                                let urls: string[] = [currentUrls];
-                                temp.vault = [
-                                    ...temp.vault,
-                                    { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
-                                ]
-                                setParsedContentState(temp)
-                                clearCurrentStuff()
-                                close()
-                                setRefreshKey(oldKey => oldKey + 1)
-                                setSortedData(parsedContentState.vault)
-                            }//}
+                                setIsNameEmpty(false)
+                                if (editing) {
+                                    let temp = parsedContentState
+                                    temp.vault[currentEntryIndex].name = currentName
+                                    temp.vault[currentEntryIndex].username = currentUsername
+                                    temp.vault[currentEntryIndex].password = currentPassword
+                                    temp.vault[currentEntryIndex].urls = currentUrls
+                                    temp.vault[currentEntryIndex].notes = currentNotes
+                                    clearCurrentStuff()
+                                    setParsedContentState(temp)
+                                    renameDrawerHandler.close()
+                                    // somehow the parsedContentState gets updated when currentEntry is updated???? but that is kind of good because it will be saved in the end
+                                    close()
+                                } else {
+                                    let temp = parsedContentState
+                                    let urls: string[] = [currentUrls];
+                                    temp.vault = [
+                                        ...temp.vault,
+                                        { id: String(uuidv4()), name: currentName, username: currentUsername, password: currentPassword, urls: urls, notes: currentNotes }
+                                    ]
+                                    setParsedContentState(temp)
+                                    clearCurrentStuff()
+                                    close()
+                                    setRefreshKey(oldKey => oldKey + 1)
+                                    setSortedData(parsedContentState.vault)
+                                }
+                            }
                         }}
                     >
                         Save
@@ -371,6 +408,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                     >
                         Delete
                     </Button>
+                    {isNameEmpty ? (<Text c="#fa0000">Entry name cannot be empty!</Text>) : (<></>)}
                 </Box>
             }
         </Drawer>

@@ -14,7 +14,7 @@ const data = [
     { link: '/passwordgenerator', label: 'Password Generator', icon: <IconLock size="1rem" stroke={1.5} />, key: randomId() },
     { link: '/security', label: 'Security', icon: <IconFingerprint size="1rem" stroke={1.5} />, key: randomId() },
     { link: '/settings', label: 'Settings', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
-    { link: '/tests', label: 'Tests', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
+    // { link: '/tests', label: 'Tests', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
 ];
 
 export function NavbarSimple() {

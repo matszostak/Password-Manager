@@ -13,6 +13,7 @@
     cursor: pointer;
     caret-color: transparent; 
     overflow: auto;
+    text-decoration: none;
 }
 
 .input {
