@@ -230,10 +230,11 @@ export default function Home() {
 						setPopoverOpened(false)
 						close()
 					}}
-						title="Create new password database" size="md"
+						title="Create new database" size="md"
 					>
 						<Box maw={340} mx="auto">
 							<TextInput
+								maxLength={128}
 								withAsterisk
 								label="Database Name"
 								placeholder="Database Name"
@@ -243,6 +244,7 @@ export default function Home() {
 							<Popover opened={popoverOpened} position="bottom" width={340} transitionProps={{ transition: 'pop' }}>
 								<Popover.Target>
 									<PasswordInput
+										maxLength={128}
 										withAsterisk
 										label="Password"
 										placeholder="Password"
@@ -260,6 +262,7 @@ export default function Home() {
 								</Popover.Dropdown>
 							</Popover>
 							<PasswordInput
+								maxLength={128}
 								withAsterisk
 								label="Confirm Password"
 								placeholder="Confirm Password"

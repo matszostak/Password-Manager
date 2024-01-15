@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
-    IconBellRinging,
     IconFingerprint,
+    IconHome,
     IconLock,
     IconSettings,
 } from '@tabler/icons-react';
@@ -10,9 +10,9 @@ import { randomId } from '@mantine/hooks';
 import { Box, NavLink } from '@mantine/core';
 
 const data = [
-    { link: '/', label: 'Home', icon: <IconBellRinging size="1rem" stroke={1.5} />, key: randomId() },
+    { link: '/', label: 'Home', icon: <IconHome size="1rem" stroke={1.5} />, key: randomId() },
     { link: '/passwordgenerator', label: 'Password Generator', icon: <IconLock size="1rem" stroke={1.5} />, key: randomId() },
-    { link: '/security', label: 'Security', icon: <IconFingerprint size="1rem" stroke={1.5} />, key: randomId() },
+    // { link: '/security', label: 'Security', icon: <IconFingerprint size="1rem" stroke={1.5} />, key: randomId() },
     { link: '/settings', label: 'Settings', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
     // { link: '/tests', label: 'Tests', icon: <IconSettings size="1rem" stroke={1.5} />, key: randomId() },
 ];

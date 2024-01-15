@@ -4,7 +4,9 @@ use rand::SeedableRng;
 use serde_json;
 use serde_json::json;
 use std::process;
+use std::time::SystemTime;
 use std::{fs, path::Path, str, path::MAIN_SEPARATOR_STR};
+use chrono::prelude::{DateTime, Utc};
 
 use super::aes_encryption::decrypt;
 use super::aes_encryption::encrypt;
@@ -32,6 +34,12 @@ pub fn create_new_database(path: String, password: String, name: String, kdf_alg
             if let Some(value) = obj.get_mut("vaultName") {
                 *value = json!(name);
             }
+            if let Some(value) = obj.get_mut("creationDate") {
+                let now: SystemTime = SystemTime::now();
+                let now: DateTime<Utc> = now.into();
+                let now_string_rfc: String = now.to_rfc3339();
+                *value = json!(now_string_rfc);
+            }
         }
         let pretty: String = serde_json::to_string_pretty(&res).unwrap();
         let mut iv: [u8; 16] = [0; 16];
@@ -55,13 +63,16 @@ pub fn decrypt_database(path: String, password: String, kdf_algo: bool) -> Strin
     let iv = &file_contents[16..32];
     let data = &file_contents[32..];
 
+    //println!("{}", hex::encode(salt));
+    //println!("{}", hex::encode(iv));
+
     let key: [u8; 32];
     if kdf_algo {
         key = generate_key_from_password_argon2(password.as_bytes(), &salt);
     } else {
         key = generate_key_from_password_pbkdf(password.as_bytes(), &salt).unwrap();
     }
-
+    //println!("{}", hex::encode(key));
     let decrypted_result = decrypt(data, &key, iv);
     if decrypted_result.is_ok() {
         let decrypted = decrypted_result.ok().unwrap();

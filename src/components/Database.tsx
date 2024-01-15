@@ -1,4 +1,4 @@
-import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, SimpleGrid, Grid, Stack, Fieldset } from "@mantine/core"
+import { Box, Group, Button, Collapse, Table, Drawer, TextInput, PasswordInput, ActionIcon, Textarea, Text, Tooltip, Divider, Accordion, Center, keys, UnstyledButton, rem, ScrollArea, Space, Highlight, Paper, SimpleGrid, Grid, Stack, Fieldset, Flex } from "@mantine/core"
 import { useDisclosure } from "@mantine/hooks"
 import { IconBrowser, IconCheck, IconChevronDown, IconChevronUp, IconDots, IconEye, IconEyeOff, IconLink, IconLock, IconNote, IconRefresh, IconSearch, IconSelector, IconSettings, IconUser, IconWorld, IconX } from "@tabler/icons-react"
 import { useState } from "react"
@@ -273,6 +273,7 @@ export default function Database({ parentState, setParentState }: { parentState:
             {
                 <Box>
                     <TextInput
+                        maxLength={128}
                         label="Entry name"
                         placeholder="Name"
                         value={currentName}
@@ -281,6 +282,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         }}
                     />
                     <TextInput
+                        maxLength={128}
                         label="Username"
                         placeholder="Username"
                         value={currentUsername}
@@ -289,6 +291,7 @@ export default function Database({ parentState, setParentState }: { parentState:
                         }}
                     />
                     <PasswordInput
+                        maxLength={128}
                         label={
                             <Group grow wrap="nowrap" gap={6}>
                                 Password
@@ -345,6 +348,8 @@ export default function Database({ parentState, setParentState }: { parentState:
                         onChange={(e) => {
                             setCurrentUrls(e.currentTarget.value)
                         }}
+                        spellCheck={false}
+                        maxLength={640}
                     />
                     <Textarea
                         label="Notes"
@@ -356,6 +361,8 @@ export default function Database({ parentState, setParentState }: { parentState:
                         onChange={(e) => {
                             setCurrentNotes(e.currentTarget.value)
                         }}
+                        spellCheck={false}
+                        maxLength={2000}
                     />
                     <Button
                         onClick={() => {
@@ -423,54 +430,61 @@ export default function Database({ parentState, setParentState }: { parentState:
         <>
             <Box>
                 <Text>{name}</Text>
-                <Button
-                    color='red'
-                    onClick={
-                        () => {
-                            localStorage.setItem('isDbOpened', 'false')
-                            localStorage.setItem('dbContent', '')
-                            localStorage.setItem('password', '')
-                            setParentState(!parentState);
-                        }}
-                >Close database</Button>
-                {drawer}
-                <Button
-                    onClick={
-                        () => {
-                            setEditing(false)
-                            setCurrentEntryIndex(-1)
-                            clearCurrentStuff()
-                            open()
-                        }}
-                >Create new</Button>
-                <Button
-                    onClick={
-                        () => {
-                            localStorage.setItem('dbContent', btoa(JSON.stringify(parsedContentState)))
-                            let x: string = String(localStorage.getItem('password'))
-                            console.log(x)
-                            encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => {
-                                if (String(value) === 'encrypted') {
-                                    notifications.show({
-                                        message: `Database saved successfully to: ${localStorage.getItem('openedPath')}`,
-                                        title: 'Database saved!',
-                                        color: 'green',
-                                        icon: <IconCheck size="0.9rem" />,
-                                        autoClose: 3600,
-                                    })
-                                } else {
-                                    notifications.show({
-                                        message: 'Something went wrong while saving the database.',
-                                        title: 'Database file not saved!',
-                                        color: "red",
-                                        icon: <IconX size="0.9rem" />,
-                                        autoClose: 3600,
-                                    })
-                                }
-                            })
-                        }}
-                    color={"green"}
-                >Save database</Button>
+                <Flex
+                    mih={50}
+                    gap="xl"
+                    justify="center"
+                    align="center"
+                    direction="row"
+                    wrap="wrap"
+                >
+                    <Button
+                        color='red'
+                        onClick={
+                            () => {
+                                localStorage.setItem('isDbOpened', 'false')
+                                localStorage.setItem('dbContent', '')
+                                localStorage.setItem('password', '')
+                                setParentState(!parentState);
+                            }}
+                    >Close database</Button>
+                    {drawer}
+                    <Button
+                        onClick={
+                            () => {
+                                setEditing(false)
+                                setCurrentEntryIndex(-1)
+                                clearCurrentStuff()
+                                open()
+                            }}
+                    >Create new</Button>
+                    <Button
+                        onClick={
+                            () => {
+                                localStorage.setItem('dbContent', btoa(JSON.stringify(parsedContentState)))
+                                let x: string = String(localStorage.getItem('password'))
+                                encryptDatabase(String(localStorage.getItem('openedPath')), String(atob(x))).then(value => {
+                                    if (String(value) === 'encrypted') {
+                                        notifications.show({
+                                            message: `Database saved successfully to: ${localStorage.getItem('openedPath')}`,
+                                            title: 'Database saved!',
+                                            color: 'green',
+                                            icon: <IconCheck size="0.9rem" />,
+                                            autoClose: 3600,
+                                        })
+                                    } else {
+                                        notifications.show({
+                                            message: 'Something went wrong while saving the database.',
+                                            title: 'Database file not saved!',
+                                            color: "red",
+                                            icon: <IconX size="0.9rem" />,
+                                            autoClose: 3600,
+                                        })
+                                    }
+                                })
+                            }}
+                        color={"green"}
+                    >Save database</Button></Flex>
             </Box>
             <Space h={20} />
             <TextInput
