@@ -1,11 +1,20 @@
 import { Button, Divider, Group, Space, Stack, Switch, Title, useComputedColorScheme, useMantineColorScheme } from '@mantine/core'
 import { IconSun, IconMoon, IconKey } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Settings() {
     const { setColorScheme } = useMantineColorScheme();
     const computedColorScheme = useComputedColorScheme('light')
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(true);
+    
+    useEffect(() => {
+        if (localStorage.getItem('kdfAlgo') == 'true') {
+            setChecked(true)
+        } else {
+            setChecked(false)
+        }
+    }, [checked]);
+
     return (
         <>
             <Title>Settings</Title>
@@ -30,10 +39,17 @@ export default function Settings() {
                     Algorithm: {checked? ('Argon2id') : ('PBKDF2-HMAC-SHA256')}
                     <Switch 
                         size="lg"
-                        defaultChecked
+                        defaultChecked={true}
                         color="indigo"
                         checked={checked}
-                        onChange={(event) => setChecked(event.currentTarget.checked)}
+                        onChange={(event) => {
+                            setChecked(event.currentTarget.checked)
+                            if (localStorage.getItem('kdfAlgo') == 'true') {
+                                localStorage.setItem('kdfAlgo', 'false')
+                            } else {
+                                localStorage.setItem('kdfAlgo', 'true')
+                            }
+                        }}
                     />
                 </Group>
             </Stack>

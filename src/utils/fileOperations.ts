@@ -3,6 +3,12 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { fileExtensionWithDot, fileExtensionWithoutDot } from './constants';
 
 export async function saveNewDatabase(newDatabaseName: string, password: string) {
+    let algorithm: boolean = false
+    if (localStorage.getItem('kdfAlgo') === 'true') {
+        algorithm = true
+    } else {
+        algorithm = false
+    }
     const filePath = await save({
         filters: [{
             name: fileExtensionWithDot,
@@ -10,7 +16,7 @@ export async function saveNewDatabase(newDatabaseName: string, password: string)
         }]
     })
     if (filePath) {
-        await invoke("create_new_database", { path: filePath, password: password, name: newDatabaseName, kdfAlgo: true })
+        await invoke("create_new_database", { path: filePath, password: password, name: newDatabaseName, kdfAlgo: algorithm })
         return filePath
     }
     else {
@@ -21,7 +27,13 @@ export async function saveNewDatabase(newDatabaseName: string, password: string)
 }
 
 export async function openExistingDatabase(password: string, selected: string) {
-    const database_content = await invoke('decrypt_database', { path: selected, password: password, kdfAlgo: true })
+    let algorithm: boolean = false
+    if (localStorage.getItem('kdfAlgo') === 'true') {
+        algorithm = true
+    } else {
+        algorithm = false
+    }
+    const database_content = await invoke('decrypt_database', { path: selected, password: password, kdfAlgo: algorithm })
     if (database_content === "Path does not exist") {
         return "Database does not exist."
     }
@@ -33,7 +45,13 @@ export async function openExistingDatabase(password: string, selected: string) {
 }
 
 export async function encryptDatabase(pathIn: string, passwordIn: string) {
-    const status = await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: atob(String(localStorage.getItem('dbContent'))), kdfAlgo: true })
+    let algorithm: boolean = false
+    if (localStorage.getItem('kdfAlgo') === 'true') {
+        algorithm = true
+    } else {
+        algorithm = false
+    }
+    const status = await invoke('encrypt_database', { path: pathIn, password: passwordIn, data: atob(String(localStorage.getItem('dbContent'))), kdfAlgo: algorithm })
     if (status === 'encrypted') {
         return status
     } else {

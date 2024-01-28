@@ -22,6 +22,7 @@ const theme = createTheme({
 });
 localStorage.setItem('isDbOpened', 'false')
 localStorage.setItem('dbContent', 'eyJ2YXVsdE5hbWUiOiAiIiwiY3JlYXRpb25kYXRlIjogIiIsInZhdWx0IjogW119')
+localStorage.setItem('kdfAlgo', 'true')
 root.render(
 	<MantineProvider defaultColorScheme='dark' theme={theme}>
 		<ModalsProvider>
